@@ -1,4 +1,6 @@
-# Introduction
+# Readme
+
+## Introduction
 
 This project contains code and a report pertaining to my work on the
 August 1st - November 1st, 2016 Red Hat Kaggle Competition. In addition
@@ -9,7 +11,7 @@ which I work as part of a business development department. For a
 specific introduction to the competition and its goals, and for an
 overview of my project, see the report file.
 
-# Set Up
+## Set Up
 
 This project will be written using Python 2.7, but I'll do my best to
 make it Python 3 compatible. Required libraries will be:

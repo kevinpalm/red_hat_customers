@@ -4,7 +4,6 @@ Kevin Palm
 August, 2016
 
 ## I. Definition
-_(approx. 1-2 pages)_
 
 ### Project Overview
 In this section, look to provide a high-level overview of the project in layman’s terms. Questions to ask yourself when writing this section:
