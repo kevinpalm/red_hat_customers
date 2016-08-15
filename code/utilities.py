@@ -8,8 +8,8 @@ def simpleload():
     test = pd.read_csv("../data/act_test.csv")
 
     # Join people to the other data sets
-    train = train.join(people, on="people_id", lsuffix="_act", rsuffix="_people")
-    test = test.join(people, on="people_id", lsuffix="_act", rsuffix="_people")
+    train = train.join(people, on="people_id", lsuffix="_act")
+    test = test.join(people, on="people_id", lsuffix="_act")
 
     return train, test
 
@@ -21,5 +21,3 @@ def peopleprep():
 
 def summarize(feature):
     pass
-
-peopleprep()

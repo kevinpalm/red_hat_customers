@@ -59,7 +59,6 @@ businesses are attempting to automate and make data driven their
 marketing and sales qualified leads.
 
 ### Problem Statement
-
 Ultimately, the goal of this project is to create a list of true/false
 predictions which append to the testing data set. The competition
 guidelines don't specifically explain what it is that competitors are
@@ -96,7 +95,6 @@ and submit the entry.
 5. **Repeat** - I'll go back, learn more, and improve.
 
 ### Metrics
-
 This Kaggle competition is scored on area under receiver operating
 characteristic curve (AUC). AUC is a bit less intuitive of a
 classification metric, but in the words of the top reply to
@@ -136,6 +134,23 @@ competition I'll be optimizing for AUC.
 _(approx. 2-4 pages)_
 
 ### Data Exploration
+There are 55 total columns after merging the people data to the training
+data. One of which is the output label feature to predict. Two are id
+columns, two are date columns, and two are group/type columns (one of
+each for people and one of each for activities). The the rest are
+characteristics, 10 of which pertain to activity characteristics and 38
+of which pertain to person characteristics.
+
+#### Output Labels
+![Histogram of Output Label Frequency](images\output_label_hist.png "Histogram of Output Label Frequency")
+The output labels are binary and close to equally distributed but not
+quite. Exploring these labels' relationships with the other features is
+the whole point of this project, but for now it's enough to know that
+there's a somewhat balanced amount of example for each label in our
+training data.
+
+#### Date Columns
+
 In this section, you will be expected to analyze the data you are using for the problem. This data can either be in the form of a dataset (or datasets), input data (or input files), or even an environment. The type of data should be thoroughly described and, if possible, have basic statistics and information presented (such as discussion of input features or defining characteristics about the input or environment). Any abnormalities or interesting qualities about the data that may need to be addressed have been identified (such as features that need to be transformed or the possibility of outliers). Questions to ask yourself when writing this section:
 - _If a dataset is present for this problem, have you thoroughly discussed certain features about the dataset? Has a data sample been provided to the reader?_
 - _If a dataset is present for this problem, are statistics about the dataset calculated and reported? Have any relevant results from this calculation been discussed?_
