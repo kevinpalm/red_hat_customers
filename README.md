@@ -5,7 +5,9 @@ August 1st - November 1st, 2016 Red Hat Kaggle Competition. In addition
 to a submitted entry to the competition, I also hope to use my work here
 as my Udacity Machine Learning Nanodegree capstone project. I've chosen
 this specific project because it relates a lot to my current job, in
-which I work as part of a business development department.
+which I work as part of a business development department. For a
+specific introduction to the competition and its goals, and to my
+project, see the report file.
 
 # Set Up
 
