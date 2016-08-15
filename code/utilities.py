@@ -8,5 +8,3 @@ def peopleprep():
 
 def summarize(feature):
     pass
-
-readprep()

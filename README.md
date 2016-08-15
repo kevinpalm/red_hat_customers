@@ -9,8 +9,8 @@ specific introduction to the competition and its goals, and for an
 overview of my project, see the report file.
 
 ## Set Up
-This project will be written using Python 2.7, but I'll do my best to
-make it Python 3 compatible. Required libraries will be:
+This project was written using Python 2.7, but with my best efforts to
+make it Python 3 compatible. Required libraries are:
 
 * [pandas](http://pandas.pydata.org/) and its dependencies
 * [scikit-learn](http://scikit-learn.org/) and its dependencies

@@ -8,7 +8,7 @@ August, 2016
 ### Project Overview
 An additional project overview can be found on the
 [competition description page](https://www.kaggle.com/c/predicting-red-hat-business-value).
-The following 
+The following overview will 
 
 In this section, look to provide a high-level overview of the project in layman’s terms. Questions to ask yourself when writing this section:
 - _Has an overview of the project been provided, such as the problem domain, project origin, and related datasets or input data?_
