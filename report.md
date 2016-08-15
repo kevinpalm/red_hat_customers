@@ -72,11 +72,26 @@ good problem statement for this project would be this:
 their activities will be of interest and some will not, and we want
 to know which so Red Hat can better use their selling resources.**
 
+My expected tasks towards a solution to this problem statement are:
 
-In this section, you will want to clearly define the problem that you are trying to solve, including the strategy (outline of tasks) you will use to achieve the desired solution. You should also thoroughly discuss what the intended solution will be for this problem. Questions to ask yourself when writing this section:
-- _Is the problem statement clearly defined? Will the reader understand what you are expecting to solve?_
-- _Have you thoroughly discussed how you will attempt to solve the problem?_
-- _Is an anticipated solution clearly defined? Will the reader understand what results you are looking for?_
+1. **Exploratory data analysis and data joining** - there's going to be
+a lot of EDA required for this project. Understanding how that these
+data sets were created, split up, and set up will be critical to
+creating the right model in the end. I don't have the history or any
+inside knowledge about the quirks of the data, and I'll need to know as
+much as I can to create the right model. It will be an investigation.
+During this phase, I'll need to join the people data set to the other
+data sets.
+2. **Feature preparation** - I'll format the data in an appropriate
+manner for my final model. Exactly how I go about this will be hugely
+reliant on the EDA step, as how I condition features and which algorithm
+I intend to use will be dependant on what I've learned so far.
+3. **Early Modelling** - I'll create a model that outputs predictions,
+using a subset of the training set so that I can use classification
+metrics on the leftover training data. I'll use the metric scores to
+tune my model.
+4. **Model** - I'll apply my model testing data and submit an entry.
+5. **Repeat** - I'll go back, learn more, and improve.
 
 ### Metrics
 In this section, you will need to clearly define the metrics or calculations you will use to measure performance of a model or result in your project. These calculations and metrics should be justified based on the characteristics of the problem and problem domain. Questions to ask yourself when writing this section:
