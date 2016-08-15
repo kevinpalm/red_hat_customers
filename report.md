@@ -8,7 +8,7 @@ August, 2016
 ### Project Overview
 The official project overview can be found on the
 [competition description page](https://www.kaggle.com/c/predicting-red-hat-business-value).
-The following overview will just be my own paraphrasing and
+The following overview is just my own paraphrasing and
 interpretation of the competition goals.
 
 Red Hat is a software company which specializes in open-source,
@@ -16,8 +16,29 @@ linux-based enterprise database solutions. They're interested in
 improving their models which classify potential clients as future
 clients, which is understandable because once that a company knows who
 their serious prospects are they can devote extra resources to winning
-them over. They've just released an anonymized data set for Kagglers to
-compete on creating the best model.
+them over.
+
+They've just released three anonymized data sets for Kagglers to
+use as they compete on creating that best model.
+
+The first data set is a one pertaining to the people in the data set -
+potential and past clients - and what kind of characteristics those
+people have. All of the characteristics are anonymized, in the sense
+that the column headers are named things like "char_1" and "char_2",
+rather than "Gender" or "Location". Most of the characteristics are
+booleans. There is also an unlabeled date column and a feature called
+"group_1". The people data set can be joined to the other two files
+using a unique identifier field they provide.
+
+The second data set is the competition training data, which similarly
+contains a date column, a feature called "activity category", and 10
+anonymized characteristic columns - this time presumably pertaining to
+the characteristics of each activity. In addition, there is a final
+column called "outcome", which has two potential values of 0 or 1, and
+which is the feature which the competition has us attempting to predict.
+
+The third data set is the testing data, which is exactly the same format
+as the training data except that it lacks the "outcome" column.
 
 
 
