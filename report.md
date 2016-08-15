@@ -106,9 +106,10 @@ classification metric, but in the words of the top reply to
 > you the probability that your classifier assigns a higher score to the
 > positive example (ie, ranks the positive higher than the negative).
 
--- <cite>Peter Prettenhofer, also the same explanation is cited on
-Wikipedia from "Fawcett, Tom (2006); An introduction to ROC analysis,
-Pattern Recognition Letters, 27, 861–874"</cite>
+-- <cite>* Directly copied from Peter Prettenhofer, but also the same
+explanation is cited on Wikipedia from "Fawcett, Tom (2006); An
+introduction to ROC analysis, Pattern Recognition Letters, 27,
+861–874"*</cite>
 
 
 In this section, you will need to clearly define the metrics or calculations you will use to measure performance of a model or result in your project. These calculations and metrics should be justified based on the characteristics of the problem and problem domain. Questions to ask yourself when writing this section:
