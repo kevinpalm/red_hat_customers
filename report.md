@@ -66,7 +66,7 @@ guidelines don't specifically explain what it is that competitors are
 predicting, but I would guess the general gist of it is something like
 "Will this prospect become a client in the next thirty days?" So, given
 that the training/testing data actually represents activities, I think a
-good one-liner problem statement for this project would be this:
+good problem statement for this project would be this:
 
 **As potential customers interact with Red Hat in the future, some of
 their activities will be of interest and some will not, and we want
