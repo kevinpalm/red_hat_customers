@@ -12,7 +12,7 @@ The following overview is just my own paraphrasing and
 interpretation of the competition goals/context.
 
 Red Hat is a software company which specializes in open-source,
-linux-based enterprise database solutions. They're interested in
+linux-based enterprise solutions. They're interested in
 improving their models which classify potential clients as future
 clients, which is understandable because once that a company knows who
 their serious prospects are they can devote extra resources to winning
