@@ -9,7 +9,7 @@ August, 2016
 The official project overview can be found on the
 [competition description page](https://www.kaggle.com/c/predicting-red-hat-business-value).
 The following overview is just my own paraphrasing and
-interpretation of the competition goals.
+interpretation of the competition goals/context.
 
 Red Hat is a software company which specializes in open-source,
 linux-based enterprise database solutions. They're interested in
