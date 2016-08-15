@@ -11,6 +11,8 @@ def labelplot():
     plt.savefig("../images/output_label_hist.png")
     plt.clf()
 
+def
+
 train, test = simpleload()
 labelplot()
 
