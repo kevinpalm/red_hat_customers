@@ -90,10 +90,26 @@ I intend to use will be dependant on what I've learned so far.
 using a subset of the training set so that I can use classification
 metrics on the leftover training data. I'll use the metric scores to
 tune my model.
-4. **Model** - I'll apply my model testing data and submit an entry.
+4. **Model** - I'll apply my model testing data which outputs a
+predictions file in the correct format for submission to kaggle.com,
+and submit the entry.
 5. **Repeat** - I'll go back, learn more, and improve.
 
 ### Metrics
+
+This Kaggle competition is scored on area under receiver operating
+characteristic curve (AUC). AUC is a bit less intuitive of a
+classification metric, but in the words of the top reply to
+[this excellent blog post on the subject](http://fastml.com/what-you-wanted-to-know-about-auc/):
+
+> Pick a random negative and a random positive example; The AUC gives
+> you the probability that your classifier assigns a higher score to the
+> positive example (ie, ranks the positive higher than the negative).
+-- <cite>Peter Prettenhofer, also the same explanation is cited on
+Wikipedia from "Fawcett, Tom (2006); An introduction to ROC analysis,
+Pattern Recognition Letters, 27, 861–874"</cite>
+
+
 In this section, you will need to clearly define the metrics or calculations you will use to measure performance of a model or result in your project. These calculations and metrics should be justified based on the characteristics of the problem and problem domain. Questions to ask yourself when writing this section:
 - _Are the metrics you’ve chosen to measure the performance of your models clearly discussed and defined?_
 - _Have you provided reasonable justification for the metrics chosen based on the problem and solution?_
