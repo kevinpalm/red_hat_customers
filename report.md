@@ -6,9 +6,20 @@ August, 2016
 ## I. Definition
 
 ### Project Overview
-An additional project overview can be found on the
+The official project overview can be found on the
 [competition description page](https://www.kaggle.com/c/predicting-red-hat-business-value).
-The following overview will 
+The following overview will just be my own paraphrasing and
+interpretation of the competition goals.
+
+Red Hat is a software company which specializes in open-source,
+linux-based enterprise database solutions. They're interested in
+improving their models which classify potential clients as future
+clients, which is understandable because once that a company knows who
+their serious prospects are they can devote extra resources to winning
+them over. They've just released an anonymized data set for Kagglers to
+compete on creating the best model.
+
+
 
 In this section, look to provide a high-level overview of the project in layman’s terms. Questions to ask yourself when writing this section:
 - _Has an overview of the project been provided, such as the problem domain, project origin, and related datasets or input data?_
