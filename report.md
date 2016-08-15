@@ -105,6 +105,7 @@ classification metric, but in the words of the top reply to
 > Pick a random negative and a random positive example; The AUC gives
 > you the probability that your classifier assigns a higher score to the
 > positive example (ie, ranks the positive higher than the negative).
+
 -- <cite>Peter Prettenhofer, also the same explanation is cited on
 Wikipedia from "Fawcett, Tom (2006); An introduction to ROC analysis,
 Pattern Recognition Letters, 27, 861–874"</cite>
