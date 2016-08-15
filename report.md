@@ -19,7 +19,7 @@ their serious prospects are they can devote extra resources to winning
 them over.
 
 They've just released three anonymized data sets for Kagglers to
-use as they compete on creating that best model.
+use as they compete on creating that improved model.
 
 The first data set is a one pertaining to the people in the data set -
 potential and past clients - and what kind of characteristics those
@@ -40,11 +40,23 @@ which is the feature which the competition has us attempting to predict.
 The third data set is the testing data, which is exactly the same format
 as the training data except that it lacks the "outcome" column.
 
+The problem domain of this challenge definitely includes supervised
+machine learning - specifically, the final model will be a classifier.
+Also, I think this competition will be hugely a problem of exploratory
+data analysis and observation. The anonymized features introduce a lot
+of challenge in the sense that they remove most elements of business
+intuition and make the contestants almost totally relent on raw data
+analysis. But at the same time, that reliance on data analysis can
+provide the benefit or eliminating researcher bias, in the sense that I
+might give each feature a more thorough look into its applications than
+if I were to come in with preconceptions about each feature's
+usefulness.
 
-
-In this section, look to provide a high-level overview of the project in layman’s terms. Questions to ask yourself when writing this section:
-- _Has an overview of the project been provided, such as the problem domain, project origin, and related datasets or input data?_
-- _Has enough background information been given so that an uninformed reader would understand the problem domain and following problem statement?_
+I think this project has special application to business development and
+marketing departments for companies which tailor to enterprises. The
+framing of the challenge matches the overall theme of how many
+businesses are attempting to automate and make data driven their
+marketing and sales qualified leads.
 
 ### Problem Statement
 In this section, you will want to clearly define the problem that you are trying to solve, including the strategy (outline of tasks) you will use to achieve the desired solution. You should also thoroughly discuss what the intended solution will be for this problem. Questions to ask yourself when writing this section:
