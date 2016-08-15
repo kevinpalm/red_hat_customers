@@ -129,7 +129,7 @@ through the good times and the bad, the times of plenty and the days of
 tough sells.
 
 Anyways, that's my best guess. I think left to my own devices I would
-prefer to use f1 as a metric for this project, but in the spirit of
+prefer to use F1 as a metric for this project, but in the spirit of
 competition I'll be optimizing for AUC.
 
 ## II. Analysis
