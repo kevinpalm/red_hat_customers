@@ -111,11 +111,26 @@ explanation is cited on Wikipedia from "Fawcett, Tom (2006); An
 introduction to ROC analysis, Pattern Recognition Letters, 27,
 861–874"*</cite>
 
+I think probably the reason this metric was chosen over accuracy is that
+the ratio of each output label is not equal, and one of the benefits of
+AUC is that it isn't negatively affected by imbalances in the frequency
+of labels.
 
-In this section, you will need to clearly define the metrics or calculations you will use to measure performance of a model or result in your project. These calculations and metrics should be justified based on the characteristics of the problem and problem domain. Questions to ask yourself when writing this section:
-- _Are the metrics you’ve chosen to measure the performance of your models clearly discussed and defined?_
-- _Have you provided reasonable justification for the metrics chosen based on the problem and solution?_
+Understanding why that this competition is scored on AUC over, say, F1
+score (which is also able to deal with imbalanced label frequencies) is
+less clear. The best discussion I've found comparing F1 and AUC to each
+other is from
+[this stackoverflow thread](http://stackoverflow.com/questions/34698161/how-to-interpret-almost-perfect-accuracy-and-auc-roc-but-zero-f1-score-precisio).
+My best guess right now is that Red Hat must be interested in a model
+that will perform well as conditions and label frequencies experience
+structural change over time, and that the changing thresholds comprising
+AUC could simulate that change. Perhaps we're making a model to last
+through the good times and the bad, the times of plenty and the days of
+tough sells.
 
+Anyways, that's my best guess. I think left to my own devices I would
+prefer to use f1 as a metric for this project, but in the spirit of
+competition I'll be optimizing for AUC.
 
 ## II. Analysis
 _(approx. 2-4 pages)_
