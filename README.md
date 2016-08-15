@@ -1,5 +1,4 @@
 ## Introduction
-
 This project contains code and a report pertaining to my work on the
 August 1st - November 1st, 2016 Red Hat Kaggle Competition. In addition
 to a submitted entry to the competition, I also hope to use my work here
@@ -10,14 +9,14 @@ specific introduction to the competition and its goals, and for an
 overview of my project, see the report file.
 
 ## Set Up
-
 This project will be written using Python 2.7, but I'll do my best to
 make it Python 3 compatible. Required libraries will be:
 
 * [pandas](http://pandas.pydata.org/) and its dependencies
 * [scikit-learn](http://scikit-learn.org/) and its dependencies
 
-Also, in order to run this repository [you'll need to download the competition data files](https://www.kaggle.com/c/predicting-red-hat-business-value/data),
+Also, in order to run this repository
+[you'll need to download the competition data files](https://www.kaggle.com/c/predicting-red-hat-business-value/data),
 and so you'll probably need to agree to the competition rules/terms.
 Store the data files in a directory named "data" inside the repository
 root directory, and you'll be all set up.
