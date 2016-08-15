@@ -143,6 +143,7 @@ of which pertain to person characteristics.
 
 #### Output Labels
 ![Histogram of Output Label Frequency](images/output_label_hist.png)
+
 The output labels are binary and close to equally distributed but not
 quite. Exploring these labels' relationships with the other features is
 the whole point of this project, but for now it's enough to know that
