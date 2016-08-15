@@ -59,6 +59,20 @@ businesses are attempting to automate and make data driven their
 marketing and sales qualified leads.
 
 ### Problem Statement
+
+Ultimately, the goal of this project is to create a list of true/false
+predictions which append to the testing data set. The competition
+guidelines don't specifically explain what it is that competitors are
+predicting, but I would guess the general gist of it is something like
+"Will this prospect become a client in the next thirty days?" So, given
+that the training/testing data actually represents activities, I think a
+good one-liner problem statement for this project would be this:
+
+**As potential customers interact with Red Hat in the future, some of
+their activities will be of interest and some will not, and if we want
+to know which so we can better use our selling resources.**
+
+
 In this section, you will want to clearly define the problem that you are trying to solve, including the strategy (outline of tasks) you will use to achieve the desired solution. You should also thoroughly discuss what the intended solution will be for this problem. Questions to ask yourself when writing this section:
 - _Is the problem statement clearly defined? Will the reader understand what you are expecting to solve?_
 - _Have you thoroughly discussed how you will attempt to solve the problem?_
