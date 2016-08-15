@@ -1,5 +1,3 @@
-# Readme
-
 ## Introduction
 
 This project contains code and a report pertaining to my work on the
