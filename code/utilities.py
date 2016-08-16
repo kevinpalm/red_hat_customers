@@ -7,9 +7,9 @@ def simpleload():
     train = pd.read_csv("../data/act_train.csv")
     test = pd.read_csv("../data/act_test.csv")
 
-    # Join people to the other data sets
-    train = train.join(people, on="people_id", lsuffix="_act")
-    test = test.join(people, on="people_id", lsuffix="_act")
+    # Merge people to the other data sets
+    train = train.merge(people, on="people_id", suffixes=("_act", ""))
+    test = test.merge(people, on="people_id", suffixes=("_act", ""))
 
     return train, test
 

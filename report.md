@@ -142,13 +142,16 @@ characteristics, 10 of which pertain to activity characteristics and 38
 of which pertain to person characteristics.
 
 #### Output Labels
+There are 975,497 rows of data with labels of 1, and 1,221,794 rows with
+labels of 0 (a grand total of 2,197,291 rows of training data).
+
 ![Histogram of Output Label Frequency](images/output_label_hist.png)
 
-The output labels are binary and somewhat close to equally distributed.
-Exploring these labels' relationships with the other features is
-the whole point of this project, but for now it's enough to know that
-there's a somewhat balanced amount of examples for each label in our
-training data.
+So the output labels are binary and somewhat close to equally
+distributed. Exploring these labels' relationships with the other
+features is the whole point of this project, but as a first step it's
+nice to know that there's a somewhat balanced amount of examples for
+each label in our training data.
 
 #### Date Columns
 

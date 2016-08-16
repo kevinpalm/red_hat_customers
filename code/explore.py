@@ -11,9 +11,18 @@ def labelplot():
     plt.savefig("../images/output_label_hist.png")
     plt.clf()
 
-def
+def activitydateplot(datecol):
+
+    # Make a line graph pertaining to the frequency and the label mean
+    group = train.group
 
 train, test = simpleload()
-labelplot()
 
+print train.columns.values
+
+print train["date_act"].min()
+print train["date_act"].max()
+
+print train["date"].min()
+print train["date"].max()
 
