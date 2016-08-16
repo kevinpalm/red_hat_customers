@@ -176,6 +176,13 @@ was not based on time.
 * The training and testing sets have a lesser similarity between people
 date, but which grows more similar each progressive year.
 
+I think a reasonable hypothesis concerning the dates is that the
+activity date pertains to the date of the actual activity, and the
+people date pertains to some significant event that every person has.
+An example of what the people date might be could be the date that they
+signed up for an account on the website, or the date that they first
+contacted Red Hat.
+
 
 
 
