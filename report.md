@@ -154,6 +154,30 @@ nice to know that there's a somewhat balanced amount of examples for
 each label in our training data.
 
 #### Date Columns
+The date field for the activities ranges from 2022-07-17 through
+2023-08-31, so we have about one year of anonymized activities data. The
+date field for people ranges from 2020-05-18 through 2023-08-31, so
+whatever people date represents we have about 3 years worth of it.
+
+A
+[really fantastic exploration of the relationship between the frequency of these dates and the output labels that I really can't outdo](https://www.kaggle.com/anokas/predicting-red-hat-business-value/time-travel-eda)
+was created by Kaggle user anokas. The big take home observations of the
+analysis where:
+
+* There's a strong weekend/weekday trend to the activities date, in
+which more activates occur during weekdays and the likelihood of
+positive labels on weekends drops.
+* There's also a weekend/weekday trend to the people date frequencies,
+but on a considerably lesser scale. Any trends between the likelihood of
+a given label based on people date is less apparent.
+* The training and the testing sets have similar frequency
+distributions for activity date, suggesting that the train test split
+was not based on time.
+* The training and testing sets have a lesser similarity between people
+date, but which grows more similar each progressive year.
+
+
+
 
 In this section, you will be expected to analyze the data you are using for the problem. This data can either be in the form of a dataset (or datasets), input data (or input files), or even an environment. The type of data should be thoroughly described and, if possible, have basic statistics and information presented (such as discussion of input features or defining characteristics about the input or environment). Any abnormalities or interesting qualities about the data that may need to be addressed have been identified (such as features that need to be transformed or the possibility of outliers). Questions to ask yourself when writing this section:
 - _If a dataset is present for this problem, have you thoroughly discussed certain features about the dataset? Has a data sample been provided to the reader?_
