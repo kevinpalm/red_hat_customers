@@ -29,6 +29,5 @@ def typeplot():
 
 
 train, test = simpleload()
-typeplot()
 
 

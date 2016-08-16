@@ -184,10 +184,19 @@ signed up for an account on the website, or the date that they first
 contacted Red Hat.
 
 #### Group/type Columns
-There are only seven activity types, so lets look at activity type and
-its relationship to the output labels first.
+There are only seven activity types, and most of them don't look to be
+that great of indicators for the output labels on their own.
 
 ![Bar Chart of Output Label Frequency by Activity Type](images/output_type_bar.png)
+
+Of all the activity types, type 3 looks like it has the most information
+pertaining to the labels on its own. However, recall that the
+overall training set has more 0 labels than 1s, so some of the increased
+likelihood for label 0 is exaggerated. It's certainly still possible
+that this feature will be more useful to us in conjunction with other
+features.
+
+For the people group columns, there's a huge 
 
 In this section, you will be expected to analyze the data you are using for the problem. This data can either be in the form of a dataset (or datasets), input data (or input files), or even an environment. The type of data should be thoroughly described and, if possible, have basic statistics and information presented (such as discussion of input features or defining characteristics about the input or environment). Any abnormalities or interesting qualities about the data that may need to be addressed have been identified (such as features that need to be transformed or the possibility of outliers). Questions to ask yourself when writing this section:
 - _If a dataset is present for this problem, have you thoroughly discussed certain features about the dataset? Has a data sample been provided to the reader?_
