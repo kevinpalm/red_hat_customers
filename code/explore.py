@@ -11,18 +11,24 @@ def labelplot():
     plt.savefig("../images/output_label_hist.png")
     plt.clf()
 
-def activitydateplot(datecol):
 
-    # Make a line graph pertaining to the frequency and the label mean
-    group = train.group
+def typeplot():
+
+    # Create a groupby object for the chart
+    df = train.groupby(["activity_category", "outcome"])["activity_id"].count()
+    df = df.reset_index()
+    df["Outcome Label 0 Frequency"] = (df["outcome"]*-1+1)*df["activity_id"]
+    df["Outcome Label 1 Frequency"] = df["outcome"]*df["activity_id"]
+
+    # Plot a bar chart
+    df[["Outcome Label 0 Frequency", "Outcome Label 1 Frequency"]].plot.bar(figsize=(9, 3))
+    plt.xticks(range(len(df["activity_category"].tolist())), df["activity_category"].tolist())
+    plt.tight_layout()
+    plt.savefig("../images/output_type_bar.png")
+    plt.clf()
+
 
 train, test = simpleload()
+typeplot()
 
-print train.columns.values
-
-print train["date_act"].min()
-print train["date_act"].max()
-
-print train["date"].min()
-print train["date"].max()
 

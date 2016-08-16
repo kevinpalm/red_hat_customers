@@ -183,8 +183,11 @@ An example of what the people date might be could be the date that they
 signed up for an account on the website, or the date that they first
 contacted Red Hat.
 
+#### Group/type Columns
+There are only seven activity types, so lets look at activity type and
+its relationship to the output labels first.
 
-
+![Bar Chart of Output Label Frequency by Activity Type](images/output_type_bar.png)
 
 In this section, you will be expected to analyze the data you are using for the problem. This data can either be in the form of a dataset (or datasets), input data (or input files), or even an environment. The type of data should be thoroughly described and, if possible, have basic statistics and information presented (such as discussion of input features or defining characteristics about the input or environment). Any abnormalities or interesting qualities about the data that may need to be addressed have been identified (such as features that need to be transformed or the possibility of outliers). Questions to ask yourself when writing this section:
 - _If a dataset is present for this problem, have you thoroughly discussed certain features about the dataset? Has a data sample been provided to the reader?_
