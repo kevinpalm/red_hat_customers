@@ -29,5 +29,8 @@ def typeplot():
 
 
 train, test = simpleload()
-
+for column in train.columns.values:
+    if "char_" in column:
+        print column
+        print train[column].unique()
 

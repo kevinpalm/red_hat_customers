@@ -41,7 +41,7 @@ The third data set is the testing data, which is exactly the same format
 as the training data except that it lacks the "outcome" column.
 
 The problem domain of this challenge definitely includes supervised
-machine learning - specifically, the final model will be a classifier.
+machine learning.
 Also, I think this competition will be hugely a problem of exploratory
 data analysis and observation. The anonymized features introduce a lot
 of challenge in the sense that they remove most elements of business
@@ -55,8 +55,8 @@ usefulness.
 I think this project has special application to business development and
 marketing departments for companies which tailor to enterprises. The
 framing of the challenge matches the overall theme of how many
-businesses are attempting to automate and make data driven their
-marketing and sales qualified leads.
+businesses are attempting to automate and make data driven processes for
+"qualifying" their marketing and sales leads.
 
 ### Problem Statement
 Ultimately, the goal of this project is to create a list of true/false
@@ -196,7 +196,40 @@ likelihood for label 0 is exaggerated. It's certainly still possible
 that this feature will be more useful to us in conjunction with other
 features.
 
-For the people group columns, there's a huge 
+For the people group columns, there are 29,899 unique groups in the
+training data and 11,640 unique groups in the testing data. There's a
+huge focus on this feature right now on the Kaggle competition page,
+because the feature in conjunction with the action date
+[was recently demonstrated by Kagglers loiso and team as able to be used to achieve ~0.987 AUC with just some logic and simple statistics](https://www.kaggle.com/loisso/predicting-red-hat-business-value/lb-0-987-group-1-and-date-trick/output).
+A really great
+[explanation of the technique was written by dmi3kno](https://www.kaggle.com/dmi3kno/predicting-red-hat-business-value/redhat-hack-in-plain-english-eda).
+The whole thing is getting called a hack or a leak, but the
+overall consensus is that the discovery doesn't necessarily break the
+competition. It just makes the competition a small numbers game about
+perfecting predictions for the relatively few rows of data in which
+their label cannot be directly inferred from the original features.
+
+So what is group_1? It appears to be clusters of people who all had the
+same dates for when their activities switched labels. So for instance,
+for a given cluster, we might be able to infer that anything before
+January 3rd was labeled 0 and anything after is labeled 1. Very powerful
+stuff considering that those labels are the whole point of the
+competition, and a good example of how powerful EDA can be.
+
+#### Characteristics Columns
+
+There are 10 characteristic columns pertaining to activities, and 38
+pertaining to people.
+
+All of the activities characteristics are groupings, with values such as
+"type 1" and "type 2". Most of those columns appear to have less than 50
+possible values, but one does include more than 7,000 types.
+
+Nine of the people characteristics are also groupings, and they're all
+less than 50 types. Twenty-seven are booleans. And one is an integer
+class, with values from 0 to 100.
+
+
 
 In this section, you will be expected to analyze the data you are using for the problem. This data can either be in the form of a dataset (or datasets), input data (or input files), or even an environment. The type of data should be thoroughly described and, if possible, have basic statistics and information presented (such as discussion of input features or defining characteristics about the input or environment). Any abnormalities or interesting qualities about the data that may need to be addressed have been identified (such as features that need to be transformed or the possibility of outliers). Questions to ask yourself when writing this section:
 - _If a dataset is present for this problem, have you thoroughly discussed certain features about the dataset? Has a data sample been provided to the reader?_
