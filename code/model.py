@@ -1,37 +1,36 @@
-from utilities import simple_load, group_split
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.ensemble import RandomForestRegressor
+from utilities import simple_load
 import pandas as pd
+import numpy as np
 
 
 def group_decision(train, test):
     # Exploit the leak revealed by Loiso and team to try and directly infer any labels that can be inferred
     # https://www.kaggle.com/c/predicting-red-hat-business-value/forums/t/22807/0-987-kernel-now-available-seems-like-leakage
 
-    # Create blank data frame for predictions of test
-    predicts = pd.DataFrame()
+    # Create some group filling columns for later use
+    train["group_fillfw"] = train["group_1"]
+    train["group_fillbw"] = train["group_1"]
 
-    # Define an estimator to scale and then label each set of data
-    estimator = Pipeline([("scale", MinMaxScaler()), ("regress", RandomForestRegressor())])
+    # Put the two data sets together and sort
+    df = train.append(test)
+    df = df.sort_values(by=["group_1", "date_act"])
 
-    # For each people group in the testing data...
-    for group in test["group_1"].unique():
-        try:
+    # Fill labels
+    df["outcome_fillfw"] = df["outcome"].fillna(method="ffill")
+    df["outcome_fillbw"] = df["outcome"].fillna(method="bfill")
 
-            # Get features for the subsection of interest
-            subtrain_x, subtrain_y, subtest_x = group_split(group, train, test)
+    # Fill the groups
+    df["group_fillfw"] = df["group_fillfw"].fillna(method="ffill")
+    df["group_fillbw"] = df["group_fillbw"].fillna(method="bfill")
 
-            # Train and join predictions
-            estimator.fit(subtrain_x, subtrain_y)
-            subtrain_x["outcome"] = subtrain_y
-            subtest_x["outcome"] = estimator.predict(subtest_x)
-            predicts = predicts.append(subtest_x)
-        except:
-            pass
+    # Use the filled labels if the labels were from the same group
+    df["same_group"] = df["group_fillfw"] == df["group_fillbw"]
+    df["interfill"] = (df["outcome_fillfw"]+df["outcome_fillbw"])/2
+    df["outcome"] = df["outcome"].fillna(df["interfill"])
+    df = df[df["same_group"] == True]
 
-    # Copy to the original index
-    test["outcome"] = predicts["outcome"]
+    # Paste outcomes to the original index
+    test["outcome"] = df["outcome"]
 
     return test["outcome"]
 
@@ -45,12 +44,12 @@ def benchmark_model():
     test["outcome"] = group_decision(train, test)
 
     # Write the inferred predictions to a template
-    test[["activity_id", "outcome"]].to_csv("../output/starter_template.csv")
+    test.reset_index()[["activity_id", "outcome"]].to_csv("../output/starter_template.csv")
 
     # Fill any missing rows with the mean of the whole column
     test["outcome"] = test["outcome"].fillna(test["outcome"].mean())
 
-    return test[["activity_id", "outcome"]]
+    return test.reset_index()[["activity_id", "outcome"]]
 
 
 def main():

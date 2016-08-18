@@ -1,6 +1,7 @@
 from utilities import simple_load
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 
 def labelplot():
@@ -35,21 +36,39 @@ def groupplot():
 
     # Read in the benchmark predictions, add them to the testing data and format to match the above df
     predicts = pd.read_csv("../output/benchmark_submission.csv")
-    formatpredicts = test[["date_act", "group_1"]]
+    formatpredicts = test[["date_act", "group_1"]].reset_index()
     formatpredicts["prediction"] = predicts["outcome"]
 
     # Append together
     df = df.append(formatpredicts)
 
-    # Pick out ten random groups who have both types of outcomes in their training data
+    # Pick out ten random groups who have at least 10 predictions and examples of both types in their training data
     grps = pd.DataFrame()
-    grps["Min Label"] = df.groupby("group_1")["outcome"].min()
-    grps["Max Label"] = df.groupby("group_1")["outcome"].max()
-    grps = grps[grps["Min Label"] != grps["Max Label"]]
-    grps = grps.sample(10, random_state=42)
+    grps["Min Label"] = df.groupby("group_1")["prediction"].min()
+    grps["Max Label"] = df.groupby("group_1")["prediction"].max()
+    grps["Count Label"] = df.groupby("group_1")["prediction"].count()
+    grps = grps[grps["Min Label"] != grps["Max Label"]][grps["Count Label"] >= 10]
+    grps = grps.sample(10, random_state=1)
     grps = list(grps.index)
 
-    print grps
+    # Prepare graphic objects
+    axdict = {}
+    f, (axdict["ax1"], axdict["ax2"], axdict["ax3"], axdict["ax4"], axdict["ax5"],axdict["ax6"], axdict["ax7"],
+        axdict["ax8"], axdict["ax9"], axdict["ax10"]) = plt.subplots(10, sharex=True, sharey=True)
+
+    # Set up the data for each object
+    for ax in axdict.keys():
+        subdf = df[df["group_1"] == grps[axdict.keys().index(ax)]]
+        subdf["date_act"] = (subdf["date_act"]-subdf["date_act"].min())/np.timedelta64(1, 'D')
+        axdict[ax].scatter(subdf["date_act"], subdf["prediction"], color='r', marker='^', alpha=.4)
+        axdict[ax].scatter(subdf["date_act"], subdf["outcome"], color='b', alpha=.4)
+
+    #
+    axdict["ax1"].set_title('Example Groups')
+    # Fine-tune figure; make subplots close to each other and hide x ticks for all but bottom plot.
+    f.subplots_adjust(hspace=0.15)
+    plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
+    plt.show()
 
 
 
