@@ -1,5 +1,6 @@
-from utilities import simpleload
+from utilities import simple_load
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 def labelplot():
@@ -27,10 +28,31 @@ def typeplot():
     plt.savefig("../images/output_type_bar.png")
     plt.clf()
 
+def groupplot():
 
-train, test = simpleload()
-for column in train.columns.values:
-    if "char_" in column:
-        print column
-        print train[column].unique()
+    # Drop unneeded features and add the source
+    df = train[["date_act", "group_1", "outcome"]]
+
+    # Read in the benchmark predictions, add them to the testing data and format to match the above df
+    predicts = pd.read_csv("../output/benchmark_submission.csv")
+    formatpredicts = test[["date_act", "group_1"]]
+    formatpredicts["prediction"] = predicts["outcome"]
+
+    # Append together
+    df = df.append(formatpredicts)
+
+    # Pick out ten random groups who have both types of outcomes in their training data
+    grps = pd.DataFrame()
+    grps["Min Label"] = df.groupby("group_1")["outcome"].min()
+    grps["Max Label"] = df.groupby("group_1")["outcome"].max()
+    grps = grps[grps["Min Label"] != grps["Max Label"]]
+    grps = grps.sample(10, random_state=42)
+    grps = list(grps.index)
+
+    print grps
+
+
+
+train, test = simple_load()
+groupplot()
 

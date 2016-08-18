@@ -226,16 +226,18 @@ All of the activities characteristics are groupings, with values such as
 possible values, but one does include more than 7,000 types.
 
 Nine of the people characteristics are also groupings, and they're all
-less than 50 types. Twenty-seven are booleans. And one is an integer
+less than 50 types. Twenty-eight are booleans. And one is an integer
 class, with values from 0 to 100.
 
-
-
-In this section, you will be expected to analyze the data you are using for the problem. This data can either be in the form of a dataset (or datasets), input data (or input files), or even an environment. The type of data should be thoroughly described and, if possible, have basic statistics and information presented (such as discussion of input features or defining characteristics about the input or environment). Any abnormalities or interesting qualities about the data that may need to be addressed have been identified (such as features that need to be transformed or the possibility of outliers). Questions to ask yourself when writing this section:
-- _If a dataset is present for this problem, have you thoroughly discussed certain features about the dataset? Has a data sample been provided to the reader?_
-- _If a dataset is present for this problem, are statistics about the dataset calculated and reported? Have any relevant results from this calculation been discussed?_
-- _If a dataset is **not** present for this problem, has discussion been made about the input space or input data for your problem?_
-- _Are there any abnormalities or characteristics about the input space or dataset that need to be addressed? (categorical variables, missing values, outliers, etc.)_
+I published
+[my own kernel exploring the people characteristics exclusively, and whether or not it makes sense to use decomposition techniques on them prior to joining them into the data set](https://www.kaggle.com/kevinpalm/predicting-red-hat-business-value/people-eda-and-decomposition).
+I found that all of the characteristics in the people data set were
+interrelated. After expanding all the features out to be one-hot encoded
+(and for the case of the integer column, min-max scaled) there were 160
+resulting columns. PCA worked pretty well, with 28 components
+explaining 80% of the variance in the data, and 50 components explaining
+90% of the variance in the data. So I think using activities
+characteristics while keeping my dimensions under control will work out.
 
 ### Exploratory Visualization
 In this section, you will need to provide some form of visualization that summarizes or extracts a relevant characteristic or feature about the data. The visualization should adequately support the data being used. Discuss why this visualization was chosen and how it is relevant. Questions to ask yourself when writing this section:
