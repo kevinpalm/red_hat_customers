@@ -23,11 +23,12 @@ def group_decision(train, test):
     df["group_fillfw"] = df["group_fillfw"].fillna(method="ffill")
     df["group_fillbw"] = df["group_fillbw"].fillna(method="bfill")
 
-    # Use the filled labels if the labels were from the same group
-    df["same_group"] = df["group_fillfw"] == df["group_fillbw"]
-    df["interfill"] = (df["outcome_fillfw"]+df["outcome_fillbw"])/2
+    # Use the filled labels only if the labels were from the same group, unless we're at the end of the group
+    df["fw_same_group"] = (df["group_fillfw"] == df["group_1"]).astype(int)
+    df["bw_same_group"] = (df["group_fillbw"] == df["group_1"]).astype(int)
+    df["interfill"] = (df["outcome_fillfw"]*df["fw_same_group"] +
+                       df["outcome_fillbw"]*df["bw_same_group"]) / (df["fw_same_group"] + df["bw_same_group"])
     df["outcome"] = df["outcome"].fillna(df["interfill"])
-    df = df[df["same_group"] == True]
 
     # Paste outcomes to the original index
     test["outcome"] = df["outcome"]

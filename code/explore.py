@@ -1,5 +1,7 @@
 from utilities import simple_load
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
 import pandas as pd
 import numpy as np
 
@@ -48,30 +50,43 @@ def groupplot():
     grps["Max Label"] = df.groupby("group_1")["prediction"].max()
     grps["Count Label"] = df.groupby("group_1")["prediction"].count()
     grps = grps[grps["Min Label"] != grps["Max Label"]][grps["Count Label"] >= 10]
-    grps = grps.sample(10, random_state=1)
+    grps = grps.sample(5, random_state=42)
     grps = list(grps.index)
 
     # Prepare graphic objects
     axdict = {}
-    f, (axdict["ax1"], axdict["ax2"], axdict["ax3"], axdict["ax4"], axdict["ax5"],axdict["ax6"], axdict["ax7"],
-        axdict["ax8"], axdict["ax9"], axdict["ax10"]) = plt.subplots(10, sharex=True, sharey=True)
-
+    f, (axdict["ax1"], axdict["ax2"], axdict["ax3"], axdict["ax4"], axdict["ax5"]) = plt.subplots(5, sharex=True,
+                                                                                                  sharey=True)
     # Set up the data for each object
     for ax in axdict.keys():
         subdf = df[df["group_1"] == grps[axdict.keys().index(ax)]]
         subdf["date_act"] = (subdf["date_act"]-subdf["date_act"].min())/np.timedelta64(1, 'D')
-        axdict[ax].scatter(subdf["date_act"], subdf["prediction"], color='r', marker='^', alpha=.4)
-        axdict[ax].scatter(subdf["date_act"], subdf["outcome"], color='b', alpha=.4)
+        axdict[ax].scatter(subdf["date_act"], subdf["prediction"], color='r', alpha=0.4)
+        axdict[ax].scatter(subdf["date_act"], subdf["outcome"], color='b', alpha=0.4)
 
-    #
-    axdict["ax1"].set_title('Example Groups')
-    # Fine-tune figure; make subplots close to each other and hide x ticks for all but bottom plot.
+    # Add a title
+    axdict["ax1"].set_title(
+        'Days Ongoing vs. Output Labels for Five Randomly Selected Groups', y=1.20)
+
+    # Add the legend to the bottom
+    plt.legend(bbox_to_anchor=(0.5, -0.675), loc=3, ncol=2, mode="expand", borderaxespad=0.)
+
+    # make subplots close to each other
     f.subplots_adjust(hspace=0.15)
+
+    # hide x ticks for all but bottom plot
     plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
-    plt.show()
 
+    # size down y ticks
+    plt.setp([a.get_yticklabels() for a in f.axes], fontsize=8)
 
+    # Write to file
+    plt.savefig("../images/output_group_scatters.png")
+    plt.clf()
 
-train, test = simple_load()
-groupplot()
+# train, test = simple_load()
+template = pd.read_csv("../output/starter_template.csv")
+
+print len(template.index)
+print len(template[(template["outcome"] != 0.0) & (template["outcome"] != 1.0)].index)
 

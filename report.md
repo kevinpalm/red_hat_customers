@@ -240,6 +240,45 @@ explaining 80% of the variance in the data, and 50 components explaining
 characteristics while keeping my dimensions under control will work out.
 
 ### Exploratory Visualization
+Because the data leak is going to be an important part of this
+competition, and because it's a little tricky to understand exactly how
+the leak happened, I'm devoting this section to my benchmark model
+[which is very similar to the loisso team's leak model](https://www.kaggle.com/loisso/predicting-red-hat-business-value/lb-0-987-group-1-and-date-trick/output).
+My benchmark model will probably serve as the starting point for my
+final machine learning model, so it's very important to understand what
+data points are leftover from the leak that still need to be estimated.
+
+The following graphic is five separate scatter plots, each of a randomly
+selected people group from the "group_1" feature, with predictions from
+my benchmark model. The graph was definitely inspired by one that
+[dmi3kno created originally](https://www.kaggle.com/dmi3kno/predicting-red-hat-business-value/redhat-hack-in-plain-english-eda),
+but this one pertains specifically to my implementation of the
+leak/exploit model.
+
+![Multiple Scatter Plots of the Benchmark/Leak Model Predictions](images/output_group_scatters.png)
+
+On the x axis we have the days ongoing since the group first appeared,
+and on the y axis is the output label. You'll notice that some of the
+predictions are set for 0.5 - those are the data points that the
+machine learning model will address. Hopefully looking at this graph,
+how that the benchmark model inferred the labels that it is a little
+more intuitive.
+
+To walk through the logic, though, the model basically looks at each
+point that it needs to estimate. It looks at the nearest output from the
+training set on the right, and it looks at the nearest output on the
+left. If they both agree, it assigns the same label to the point it is
+currently estimating. If they disagree, it assigns a label of 0.5. If
+the point happens to be on the rightmost or leftmost extreme, it assumes
+the closest output label is correct.
+
+And that's all there is to it. This inferential model handles 425,656
+rows of the testing data. So now we have 73,031 rows of data remaining
+to be estimated with a machine learning model, and whoever can do it
+best will win the competition!
+
+
+
 In this section, you will need to provide some form of visualization that summarizes or extracts a relevant characteristic or feature about the data. The visualization should adequately support the data being used. Discuss why this visualization was chosen and how it is relevant. Questions to ask yourself when writing this section:
 - _Have you visualized a relevant characteristic or feature about the dataset or input data?_
 - _Is the visualization thoroughly analyzed and discussed?_
