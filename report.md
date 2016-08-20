@@ -131,7 +131,6 @@ prefer to use F1 as a metric for this project, but in the spirit of
 competition I'll be optimizing for AUC.
 
 ## II. Analysis
-_(approx. 2-4 pages)_
 
 ### Data Exploration
 There are 55 total columns after merging the people data to the training
@@ -346,7 +345,7 @@ the leaderboard.
 
 Not to say that this project will be evaluated entirely off the Kaggle
 leaderboard, though. When cross validating locally using a split of the
-training data file, I'll be evaluating both my machine learning model
+training data file, I'll be evaluating both my final model
 and the leak model. I intend to have a final model that beats the leak
 model for every random split of the data.
 
