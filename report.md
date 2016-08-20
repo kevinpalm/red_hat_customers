@@ -243,7 +243,7 @@ characteristics while keeping my dimensions under control will work out.
 Because the data leak is going to be an important part of this
 competition, and because it's a little tricky to understand exactly how
 the leak happened, I'm devoting this section to my benchmark model
-[which is very similar to the loisso team's leak model](https://www.kaggle.com/loisso/predicting-red-hat-business-value/lb-0-987-group-1-and-date-trick/output).
+[which is inspired by and very similar to the loisso team's leak model](https://www.kaggle.com/loisso/predicting-red-hat-business-value/lb-0-987-group-1-and-date-trick/output).
 
 The following graphic is five separate scatter plots, each of a randomly
 selected people group from the "group_1" feature, with predictions from
@@ -255,9 +255,7 @@ but this one pertains specifically to
 ![Multiple Scatter Plots of the Benchmark/Leak Model Predictions](images/output_group_scatters.png)
 
 On the x axis we have the days ongoing since the group first appeared,
-and on the y axis is the output label. You'll notice that some of the
-predictions are set for 0.5 - those are the data points that the
-machine learning model will address. Hopefully looking at this graph,
+and on the y axis is the output label. Hopefully looking at this graph,
 how that the benchmark model inferred the labels that it is a little
 more intuitive.
 
@@ -281,6 +279,31 @@ input features. Whichever way the problem is approached, the
 relationship between activity dates and people groups is very important!
 
 ### Algorithms and Techniques
+Given that this project is for a machine learning nanodegree, I'm going
+to use the approach of translating the leak (and other relevant
+features) into a machine learning model!
+
+So what will my final regressor be? I think this is a classically good
+use case for gradient boosting. I think it'll be very doable to set up
+a bunch of decent predictor features like normal, but also include a
+feature suggesting which label the leak would classify and some
+measure(s) of that label's dependability. Say that I created a feature
+that was a scale of 1-100 for how dependable the leak approach was for
+each point - a gradient boosting regressor would train individual
+decision trees for each step along that scale of 1-100. Hopefully the
+end effect would be that the leak approach trumps all else for some of
+the higher measures of dependability, and the data points that are more
+uncertain from the leak perspective can be taken in context of the other
+features.
+
+Some specific examples of what could constitute those measures of the
+leak feature's dependability might be:
+
+* How many units away the right and left nearest neighboring labels are
+* The density of the neighbors within some range, and their label
+uniformity
+* If the right and left nearest neighbors even have the same label
+
 
 
 In this section, you will need to discuss the algorithms and techniques you intend to use for solving the problem. You should justify the use of each one based on the characteristics of the problem and the problem domain. Questions to ask yourself when writing this section:

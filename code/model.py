@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 
-def group_decision(train, test, only_certain=True):
+def group_decision(train, test):
     # Exploit the leak revealed by Loiso and team to try and directly infer any labels that can be inferred
     # https://www.kaggle.com/c/predicting-red-hat-business-value/forums/t/22807/0-987-kernel-now-available-seems-like-leakage
 
@@ -58,10 +58,6 @@ def group_decision(train, test, only_certain=True):
     # Fill everything
     df["outcome"] = df["outcome"].fillna(df["interfill"])
 
-    if only_certain == True:
-        # Drop anything we're not 100% certain of
-        df = df[(df["outcome"] == 0.0) | (df["outcome"] == 1.0)]
-
     # Return outcomes to the original index
     test["outcome"] = df["outcome"]
 
@@ -75,9 +71,6 @@ def benchmark_model():
 
     # Try to just infer the correct dates using the data leak
     test["outcome"] = group_decision(train, test, only_certain=False)
-
-    # Write the inferred predictions to a template
-    test.reset_index()[["activity_id", "outcome"]].to_csv("../output/starter_template.csv", index=False)
 
     # Fill any missing rows with the mean of the whole column
     test["outcome"] = test["outcome"].fillna(test["outcome"].mean())
