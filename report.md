@@ -294,7 +294,7 @@ decision trees for each step along that scale of 1-100. Hopefully the
 end effect would be that the leak approach trumps all else for some of
 the higher measures of dependability, and the data points that are more
 uncertain from the leak perspective can be taken in context of the other
-features.
+features. At least that would be a simplified way of approaching it.
 
 Some specific examples of what could constitute those measures of the
 leak feature's dependability might be:
@@ -304,12 +304,32 @@ leak feature's dependability might be:
 uniformity
 * If the right and left nearest neighbors even have the same label
 
+In addition to the features that translate the data leak to my final
+estimator, I want to include information pertaining to:
 
+* Date seasonality - like what day of the week, or which month. I'll try
+creating these kinds of features for both the activity date and the
+people date, then they'll need to be one hot encoded.
+* Boolean characteristics - the characteristics that are true/false will
+be easiest to include in the model, they just need to be converted to 0s
+and 1s.
+* Categorical characteristics and activity type - I want to include
+information from the characteristics and activity type features, but how
+that I can do that depends on how many categories are in each feature. I
+definitely can't just one-hot encode the features that have 1,000+
+categories, that will be way too many dimensions. So it'll be a
+combination of one hot encoding, and for the big ones I'll be using
+feature hashing or
+[leave one out encoding](https://www.kaggle.com/c/caterpillar-tube-pricing/forums/t/15748/strategies-to-encode-categorical-variables-with-many-categories).
+* Integer characteristics - there's only one of these. I expect to just
+end up scaling this feature, but I may experiment with one-hot encoding
+if I end up deviating from the gradient boosting regressor.
 
-In this section, you will need to discuss the algorithms and techniques you intend to use for solving the problem. You should justify the use of each one based on the characteristics of the problem and the problem domain. Questions to ask yourself when writing this section:
-- _Are the algorithms you will use, including any default variables/parameters in the project clearly defined?_
-- _Are the techniques to be used thoroughly discussed and justified?_
-- _Is it made clear how the input data or datasets will be handled by the algorithms and techniques chosen?_
+Then finally, on top of all this, I'm expecting to have some PCA or RCA
+in the mix just to try and keep my dimensions under control. Gradient
+boosting is a computationally expensive algorithm and this is a big
+data set, so keeping my running time and memory requirements reasonable
+is going to be a major concern.
 
 ### Benchmark
 In this section, you will need to provide a clearly defined benchmark result or threshold for comparing across performances obtained by your solution. The reasoning behind the benchmark (in the case where it is not an established result) should be discussed. Questions to ask yourself when writing this section:

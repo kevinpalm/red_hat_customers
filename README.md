@@ -15,6 +15,9 @@ make it Python 3 compatible. Required libraries are:
 * [pandas](http://pandas.pydata.org/) and its dependencies
 * [scikit-learn](http://scikit-learn.org/) and its dependencies
 
+Next you'll need to create a directory named "output" inside the
+repository root directory, which is where model outputs will save to.
+
 Also, in order to run this repository
 [you'll need to download the competition data files](https://www.kaggle.com/c/predicting-red-hat-business-value/data),
 and so you'll probably need to agree to the competition rules/terms.
