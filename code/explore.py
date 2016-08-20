@@ -49,7 +49,7 @@ def groupplot():
     grps["Min Label"] = df.groupby("group_1")["prediction"].min()
     grps["Max Label"] = df.groupby("group_1")["prediction"].max()
     grps["Count Label"] = df.groupby("group_1")["prediction"].count()
-    grps = grps[grps["Min Label"] != grps["Max Label"]][grps["Count Label"] >= 10]
+    grps = grps[grps["Min Label"] < 0.25][grps["Max Label"] > 0.75][grps["Count Label"] >= 10]
     grps = grps.sample(5, random_state=42)
     grps = list(grps.index)
 
@@ -84,9 +84,6 @@ def groupplot():
     plt.savefig("../images/output_group_scatters.png")
     plt.clf()
 
-# train, test = simple_load()
-template = pd.read_csv("../output/starter_template.csv")
-
-print len(template.index)
-print len(template[(template["outcome"] != 0.0) & (template["outcome"] != 1.0)].index)
+train, test = simple_load()
+groupplot()
 

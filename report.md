@@ -244,16 +244,13 @@ Because the data leak is going to be an important part of this
 competition, and because it's a little tricky to understand exactly how
 the leak happened, I'm devoting this section to my benchmark model
 [which is very similar to the loisso team's leak model](https://www.kaggle.com/loisso/predicting-red-hat-business-value/lb-0-987-group-1-and-date-trick/output).
-My benchmark model will probably serve as the starting point for my
-final machine learning model, so it's very important to understand what
-data points are leftover from the leak that still need to be estimated.
 
 The following graphic is five separate scatter plots, each of a randomly
 selected people group from the "group_1" feature, with predictions from
 my benchmark model. The graph was definitely inspired by one that
 [dmi3kno created originally](https://www.kaggle.com/dmi3kno/predicting-red-hat-business-value/redhat-hack-in-plain-english-eda),
-but this one pertains specifically to my implementation of the
-leak/exploit model.
+but this one pertains specifically to 
+[my implementation of the leak/exploit model](https://www.kaggle.com/kevinpalm/predicting-red-hat-business-value/simplified-leak-starter-template/output).
 
 ![Multiple Scatter Plots of the Benchmark/Leak Model Predictions](images/output_group_scatters.png)
 
@@ -270,14 +267,22 @@ training set on the right, and it looks at the nearest output on the
 left. If they both agree, it assigns the same label to the point it is
 currently estimating. If they disagree, it assigns a label of 0.5. If
 the point happens to be on the rightmost or leftmost extreme, it assumes
-the closest output label is correct.
+the closest output label is correct. Finally, it adds a little
+cushioning to any of the less certain values, such as the values on the
+rightmost and leftmost extremes.
 
-And that's all there is to it. This inferential model handles 425,656
-rows of the testing data. So now we have 73,031 rows of data remaining
-to be estimated with a machine learning model, and whoever can do it
-best will win the competition!
+No doubt a lot of kagglers are going to use some an inferential leak
+model as their first pass, and then estimate the remaining data points
+with a more sophisticated model. I think that's a very valid approach,
+as there are still 70,000 remaining points that have disagreeing labels
+to each side of them. I think the other dominant approach will be to
+create a model that accounts for the leak by "translating" it into the
+input features. Whichever way you approach the problem, the relationship
+between activity dates and people groups is very important!
 
 ### Algorithms and Techniques
+
+
 In this section, you will need to discuss the algorithms and techniques you intend to use for solving the problem. You should justify the use of each one based on the characteristics of the problem and the problem domain. Questions to ask yourself when writing this section:
 - _Are the algorithms you will use, including any default variables/parameters in the project clearly defined?_
 - _Are the techniques to be used thoroughly discussed and justified?_
