@@ -1,6 +1,6 @@
-from utilities import simple_load
+from utilities import simple_load, extract_leak_features
+from sklearn.ensemble import GradientBoostingRegressor
 import pandas as pd
-import numpy as np
 
 
 def group_decision(train, test):
@@ -66,11 +66,11 @@ def group_decision(train, test):
 
 def benchmark_model():
 
-    # Load in the data set simply by merging together
+    # Load in the data set by merging together
     train, test = simple_load()
 
     # Try to just infer the correct dates using the data leak
-    test["outcome"] = group_decision(train, test, only_certain=False)
+    test["outcome"] = group_decision(train, test)
 
     # Fill any missing rows with the mean of the whole column
     test["outcome"] = test["outcome"].fillna(test["outcome"].mean())
@@ -78,10 +78,30 @@ def benchmark_model():
     return test.reset_index()[["activity_id", "outcome"]]
 
 
+def model():
+
+    # Load in the data set by merging together
+    train, test = simple_load()
+
+    # Prep the features that are engineered to translate the data leak
+    train_x, train_y, test_x = extract_leak_features(train, test)
+
+    estimator = GradientBoostingRegressor()
+    estimator.fit(train_x, train_y)
+    test_x["outcome"] = estimator.predict(test_x)
+    train_x["outcome"] = train_y
+    df = train_x.append(test_x)
+    test["outcome"] = df["outcome"]
+    test.reset_index()[["activity_id", "outcome"]].to_csv("../output/rf_simple_submission.csv", index=False)
+
+
 def main():
 
     # Write a benchmark file to the submissions folder
-    benchmark_model().to_csv("../output/benchmark_submission.csv", index=False)
+    # benchmark_model().to_csv("../output/benchmark_submission.csv", index=False)
+
+    # Write model predictions file to the submissions folder
+    model()
 
 if __name__ == "__main__":
     main()
