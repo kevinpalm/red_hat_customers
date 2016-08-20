@@ -271,14 +271,14 @@ the closest output label is correct. Finally, it adds a little
 cushioning to any of the less certain values, such as the values on the
 rightmost and leftmost extremes.
 
-No doubt a lot of kagglers are going to use some an inferential leak
+No doubt a lot of kagglers are going to use an inferential leak
 model as their first pass, and then estimate the remaining data points
 with a more sophisticated model. I think that's a very valid approach,
 as there are still 70,000 remaining points that have disagreeing labels
 to each side of them. I think the other dominant approach will be to
 create a model that accounts for the leak by "translating" it into the
-input features. Whichever way you approach the problem, the relationship
-between activity dates and people groups is very important!
+input features. Whichever way the problem is approached, the
+relationship between activity dates and people groups is very important!
 
 ### Algorithms and Techniques
 
