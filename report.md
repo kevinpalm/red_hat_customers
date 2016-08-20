@@ -332,10 +332,23 @@ data set, so keeping my running time and memory requirements reasonable
 is going to be a major concern.
 
 ### Benchmark
-In this section, you will need to provide a clearly defined benchmark result or threshold for comparing across performances obtained by your solution. The reasoning behind the benchmark (in the case where it is not an established result) should be discussed. Questions to ask yourself when writing this section:
-- _Has some result or value been provided that acts as a benchmark for measuring performance?_
-- _Is it clear how this result or value was obtained (whether by data or by hypothesis)?_
+For this project, my benchmark is going to be my exploit/leak inference
+model that's sort of a simplified version of lasio and team's. The
+exploit model is mostly about filling NaNs in a tricky way, so I figure
+that my final model should be able to beat that with the right feature
+engineering, as the target information is pretty plainly contained in
+the data.
 
+It may turn out to be a challenging benchmark. For context, the exploit
+model scores 0.987028 AUC (1.0 is the maximum possible) and at the time
+of writing this scoring anything above that puts you in the top 15% of
+the leaderboard.
+
+Not to say that this project will be evaluated entirely off the Kaggle
+leaderboard, though. When cross validating locally using a split of the
+training data file, I'll be evaluating both my machine learning model
+and the leak model. I intend to have a final model that beats the leak
+model for every random split of the data.
 
 ## III. Methodology
 _(approx. 3-5 pages)_
