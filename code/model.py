@@ -1,4 +1,4 @@
-from utilities import simple_load, extract_leak_features
+from utilities import *
 from sklearn.ensemble import GradientBoostingRegressor
 import pandas as pd
 
@@ -86,13 +86,17 @@ def model():
     # Prep the features that are engineered to translate the data leak
     train_x, train_y, test_x = extract_leak_features(train, test)
 
-    estimator = GradientBoostingRegressor()
-    estimator.fit(train_x, train_y)
-    test_x["outcome"] = estimator.predict(test_x)
-    train_x["outcome"] = train_y
-    df = train_x.append(test_x)
-    test["outcome"] = df["outcome"]
-    test.reset_index()[["activity_id", "outcome"]].to_csv("../output/rf_simple_submission.csv", index=False)
+    # Get the regular features
+    # train_feats, test_feats =
+    prep_features(train, test, extra_outcomes=train_y)
+
+    # estimator = GradientBoostingRegressor()
+    # estimator.fit(train_x, train_y)
+    # test_x["outcome"] = estimator.predict(test_x)
+    # train_x["outcome"] = train_y
+    # df = train_x.append(test_x)
+    # test["outcome"] = df["outcome"]
+    # test.reset_index()[["activity_id", "outcome"]].to_csv("../output/rf_simple_submission.csv", index=False)
 
 
 def main():

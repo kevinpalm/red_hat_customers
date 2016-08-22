@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn.decomposition import IncrementalPCA
 
 
 def simple_load():
@@ -36,15 +37,15 @@ def extract_leak_features(train, test):
 
     # Copy train onto the merged index, then shift a copy one step each way for neighbor features, fill accordingly
     indextrain = pd.DataFrame(index=df.index).join(train)
-    df = df.join(indextrain.shift(-1), rsuffix="_fbw").join(indextrain.shift(1), rsuffix="_ffw")
-    df[["group_1_fbw", "date_act_fbw", "outcome_fbw"]] = df[["group_1_fbw", "date_act_fbw", "outcome_fbw"]].fillna(
+    df = df.join(indextrain.shift(-1), rsuffix="_bfill").join(indextrain.shift(1), rsuffix="_ffill")
+    df[["group_1_bfill", "date_act_bfill", "outcome_bfill"]] = df[["group_1_bfill", "date_act_bfill", "outcome_bfill"]].fillna(
         method="bfill")
-    df[["group_1_ffw", "date_act_ffw", "outcome_ffw"]] = df[["group_1_ffw", "date_act_ffw", "outcome_ffw"]].fillna(
+    df[["group_1_ffill", "date_act_ffill", "outcome_ffill"]] = df[["group_1_ffill", "date_act_ffill", "outcome_ffill"]].fillna(
         method="ffill")
 
     # Set anything that was filled between groups as nan
-    df.loc[(df["group_1"] != df["group_1_ffw"]), ["group_1_ffw", "date_act_ffw", "outcome_ffw"]] = np.nan
-    df.loc[(df["group_1"] != df["group_1_fbw"]), ["group_1_fbw", "date_act_fbw", "outcome_fbw"]] = np.nan
+    df.loc[(df["group_1"] != df["group_1_ffill"]), ["group_1_ffill", "date_act_ffill", "outcome_ffill"]] = np.nan
+    df.loc[(df["group_1"] != df["group_1_bfill"]), ["group_1_bfill", "date_act_bfill", "outcome_bfill"]] = np.nan
 
     # We want to know the average density for each group
     lookup = pd.DataFrame()
@@ -67,12 +68,12 @@ def extract_leak_features(train, test):
 
     # Get distance to each side, as a ratio of the density... weird math units but I think it will work okay as a
     # measure of the left and right outcome label dependability
-    df["left_distance_ratio"] = (df["date_act"]-df["date_act_ffw"])/np.timedelta64(1, 'D')/df["density"]
-    df["right_distance_ratio"] = (df["date_act_fbw"]-df["date_act"])/np.timedelta64(1, 'D')/df["density"]
+    df["left_distance_ratio"] = (df["date_act"]-df["date_act_ffill"])/np.timedelta64(1, 'D')/df["density"]
+    df["right_distance_ratio"] = (df["date_act_bfill"]-df["date_act"])/np.timedelta64(1, 'D')/df["density"]
 
     # Get values to each side
-    df["left_outcome"] = df["outcome_fbw"]
-    df["right_outcome"] = df["outcome_ffw"]
+    df["left_outcome"] = df["outcome_bfill"]
+    df["right_outcome"] = df["outcome_ffill"]
 
     # Replace infinities from the groups with 0 distance with nans
     df = df.replace(np.inf, np.nan)
@@ -85,10 +86,93 @@ def extract_leak_features(train, test):
     test = df[pd.isnull(df["outcome"])]
 
     # Select out features for final output
-    # Also fill NaNs with -1... it should be okay because we're going to use a gradient boosting estimator
+    # Also fill NaNs with -1... it should be okay because we're going to use a gradient boosting estimator anyway
     train_x = train[["left_distance_ratio", "right_distance_ratio", "left_outcome", "right_outcome"]].fillna(-1.0)
     train_y = train["outcome"]
     test_x = test[["left_distance_ratio", "right_distance_ratio", "left_outcome", "right_outcome"]].fillna(-1.0)
 
-
     return train_x, train_y, test_x
+
+def prep_features(train, test, extra_outcomes=None):
+
+    if isinstance(extra_outcomes, pd.Series):
+        # Use the extra known outcomes to resplit the testing data
+        test["outcome"] = extra_outcomes
+        train = train.append(test[pd.notnull(test["outcome"])])
+        test = test[pd.isnull(test["outcome"])].drop("outcome", axis=1)
+
+    # Initialize two empty data frames with matching indexes for storing features
+    train_feats = pd.DataFrame(index=train.index)
+    test_feats = pd.DataFrame(index=test.index)
+
+    # Seasonal features for activity date, we only need <1 year types because that's all the training data includes
+    train_feats = train_feats.join(pd.get_dummies("act_day_" + train["date_act"].dt.day.astype(str)))
+    train_feats = train_feats.join(pd.get_dummies("act_month_" + train["date_act"].dt.month.astype(str)))
+    train_feats = train_feats.join(pd.get_dummies("act_weekday_" + train["date_act"].dt.weekday.astype(str)))
+    test_feats = test_feats.join(pd.get_dummies("act_day_" + test["date_act"].dt.day.astype(str)))
+    test_feats = test_feats.join(pd.get_dummies("act_month_" + test["date_act"].dt.month.astype(str)))
+    test_feats = test_feats.join(pd.get_dummies("act_weekday_" + test["date_act"].dt.weekday.astype(str)))
+
+    # Seasonal features for people date, let's only do month and year because it seems to be a longer term thing
+    train_feats = train_feats.join(pd.get_dummies("people_month_" + train["date"].dt.month.astype(str)))
+    train_feats = train_feats.join(pd.get_dummies("people_year_" + train["date"].dt.year.astype(str)))
+    test_feats = test_feats.join(pd.get_dummies("people_month_" + test["date"].dt.month.astype(str)))
+    test_feats = test_feats.join(pd.get_dummies("people_year_" + test["date"].dt.year.astype(str)))
+
+    # Drop those date columns now that they're not needed
+    train = train.drop(["date", "date_act"], axis=1)
+    test = test.drop(["date", "date_act"], axis=1)
+
+    # Drop any columns with nans
+    train = train.dropna(axis=1)
+    test = test.dropna(axis=1)
+
+    # Also remove group_1 since it's already used, and people_id by association. Also, outcome isn't a training feature
+    train = train.drop(["group_1", "outcome", "people_id"], axis=1)
+    test = test.drop(["group_1", "people_id"], axis=1)
+
+    # Char_38 can go in as is since it's an ordinal feature, so long as we scale it to be between 0 and 1
+    train_feats["char_38"] = train["char_38"]/100
+    train = train.drop("char_38", axis=1)
+    test_feats["char_38"] = test["char_38"]/100
+    test = test.drop("char_38", axis=1)
+
+    # Copy over the ready made booleans, one-hot the categorical with a reasonable number of features, drop as we go
+    for column in train.columns.values:
+        if train[column].dtype == bool:
+            train_feats[column] = train[column].astype(int)
+            train = train.drop(column, axis=1)
+        elif len(set(train[column].tolist())) < 100:
+            train_feats = train_feats.join(pd.get_dummies(column + "_" + train[column]))
+            train = train.drop(column, axis=1)
+
+
+    for column in test.columns.values:
+        if test[column].dtype == bool:
+            test_feats[column] = test[column].astype(int)
+            test = test.drop(column, axis=1)
+        elif len(set(test[column].tolist())) < 100:
+            test_feats = test_feats.join(pd.get_dummies(column + "_" + test[column]))
+            test = test.drop(column, axis=1)
+
+    # Cross check for any columns that don't exist in both sides of the split
+    for column in train_feats.columns.values:
+        if column not in test_feats.columns.values:
+            train_feats = train_feats.drop(column, axis=1)
+    for column in test_feats.columns.values:
+        if column not in train_feats.columns.values:
+            test_feats = test_feats.drop(column, axis=1)
+
+    # Let's get some PCA done on this giant data set, incrementally for my poor little RAM sticks
+    decomp = IncrementalPCA(n_components=20)
+    decomp.fit(train_feats)
+
+    # Prepare the training output
+    train_comps = pd.DataFrame(decomp.transform(train_feats), index=train_feats.index)
+    train_comps.columns = ["principle_component_" + i for i in range(len(train_comps.columns.values))]
+
+    # Prepare the testing output
+    test_comps = pd.DataFrame(decomp.transform(test_feats), index=test_feats.index)
+    test_comps.columns = ["principle_component_" + i for i in range(len(test_comps.columns.values))]
+
+    return train_comps, test_comps

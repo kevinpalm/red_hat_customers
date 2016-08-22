@@ -35,7 +35,7 @@ def groupplot():
     df = train[["date_act", "group_1", "outcome"]]
 
     # Read in the benchmark predictions, add them to the testing data and format to match the above df
-    predicts = pd.read_csv("../output/benchmark_submission.csv")
+    predicts = pd.read_csv("../output/rf_simple_submission.csv")
     formatpredicts = test[["date_act", "group_1"]].reset_index()
     formatpredicts["prediction"] = predicts["outcome"]
 
@@ -79,7 +79,8 @@ def groupplot():
     plt.setp([a.get_yticklabels() for a in f.axes], fontsize=8)
 
     # Write to file
-    plt.savefig("../images/output_group_scatters.png")
+    # plt.savefig("../images/output_group_scatters.png")
+    plt.show()
     plt.clf()
 
 train, test = simple_load()
