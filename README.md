@@ -30,3 +30,12 @@ Also, in order to run this repository
 and so you'll probably need to agree to the competition rules/terms.
 Store the data files in a directory named "data" inside the repository
 root directory, and you'll be all set up.
+
+## Execution
+The primary code is located in model.py, and to execute the script
+you'll just need to execute model.py.
+
+If you're only interested in running the local tests, make sure to
+comment out the the extra lines in the main() function. The local tests
+take about two minutes, whereas the full script to generate a kaggle
+submission takes about 20 minutes.
