@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 
-def labelplot():
+def labelplot(train, test):
 
     # Make a frequency histogram for the output labels
     train["outcome"].plot.hist(bins=2, figsize=(3, 3))
@@ -14,7 +14,7 @@ def labelplot():
     plt.clf()
 
 
-def typeplot():
+def typeplot(train, test):
 
     # Create a groupby object for the chart
     df = train.groupby(["activity_category", "outcome"])["activity_id"].count()
@@ -29,13 +29,13 @@ def typeplot():
     plt.savefig("../images/output_type_bar.png")
     plt.clf()
 
-def groupplot():
+def groupplot(train, test):
 
     # Drop unneeded features and add the source
     df = train[["date_act", "group_1", "outcome"]]
 
     # Read in the benchmark predictions, add them to the testing data and format to match the above df
-    predicts = pd.read_csv("../output/rf_simple_submission.csv")
+    predicts = pd.read_csv("../output/kpalm_submission.csv")
     formatpredicts = test[["date_act", "group_1"]].reset_index()
     formatpredicts["prediction"] = predicts["outcome"]
 
@@ -48,7 +48,7 @@ def groupplot():
     grps["Max Label"] = df.groupby("group_1")["prediction"].max()
     grps["Count Label"] = df.groupby("group_1")["prediction"].count()
     grps = grps[grps["Min Label"] < 0.25][grps["Max Label"] > 0.75][grps["Count Label"] >= 10]
-    grps = grps.sample(5, random_state=42)
+    grps = grps.sample(5) # , random_state=42
     grps = list(grps.index)
 
     # Prepare graphic objects
@@ -83,6 +83,10 @@ def groupplot():
     plt.show()
     plt.clf()
 
-train, test = simple_load()
-groupplot()
+def main():
+    train, test = simple_load()
+    groupplot(train, test)
+
+if __name__ == "__main__":
+    main()
 
