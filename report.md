@@ -486,16 +486,19 @@ model is very dependable and would be highly valuable, it can't be
 used in any sort of real work setting.
 
 ### Justification
-In this section, your model’s final solution and its results should be compared to the benchmark you established earlier in the project using some type of statistical analysis. You should also justify whether these results and the solution are significant enough to have solved the problem posed in the project. Questions to ask yourself when writing this section:
-- _Are the final results found stronger than the benchmark result reported earlier?_
-- _Have you thoroughly analyzed and discussed the final solution?_
-- _Is the final solution significant enough to have solved the problem?_
-
+The benchmark model scores 0.987028 AUC and my model scores 0.987882
+AUC, so while my model isn't the best it does successfully perform
+better than some tricky NaN filling. It's not a huge difference, but in
+terms of eliminating the degree of error remaining that's 6.6%. At the
+beginning of this project I defined beating that benchmark as my goal,
+and I did manage to successfully do that.
 
 ## V. Conclusion
 _(approx. 1-2 pages)_
 
 ### Free-Form Visualization
+
+
 In this section, you will need to provide some form of visualization that emphasizes an important quality about the project. It is much more free-form, but should reasonably support a significant result or characteristic about the problem that you want to discuss. Questions to ask yourself when writing this section:
 - _Have you visualized a relevant or important quality about the problem, dataset, input data, or results?_
 - _Is the visualization thoroughly analyzed and discussed?_
