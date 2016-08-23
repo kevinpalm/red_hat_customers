@@ -460,23 +460,30 @@ results of those tests are in the table below.
 | 0.3           | 50           | 3         | -0.012841561                  |                    |
 | 0.2           | 50           | 2         | -0.015455808                  |                    |
 
-I decided to optimize for the difference from the benchmark model,
-because the small size of the samples introduced a lot of fluctuation in
-AUC scores but the benchmark model fluctuated right with it. The best
-ones I did try submitting to Kaggle, but while they do all beat the
-benchmark, none of them improve beyond the out of the box model. So at
-this point, my final model is the sklearn out of the box gradient
-boosting regressor.
-
 ## IV. Results
-_(approx. 2-3 pages)_
 
 ### Model Evaluation and Validation
-In this section, the final model and any supporting qualities should be evaluated in detail. It should be clear how the final model was derived and why this model was chosen. In addition, some type of analysis should be used to validate the robustness of this model and its solution, such as manipulating the input data or environment to see how the model’s solution is affected (this is called sensitivity analysis). Questions to ask yourself when writing this section:
-- _Is the final model reasonable and aligning with solution expectations? Are the final parameters of the model appropriate?_
-- _Has the final model been tested with various inputs to evaluate whether the model generalizes well to unseen data?_
-- _Is the model robust enough for the problem? Do small perturbations (changes) in training data or the input space greatly affect the results?_
-- _Can results found from the model be trusted?_
+
+In my local tests I decided to optimize for the difference from the
+benchmark model, because the small size of my samples introduced a lot
+of fluctuation in AUC scores but the benchmark model fluctuated in
+parallel. The best ones I did try submitting to Kaggle, and while they
+do all beat the benchmark, none of them improve beyond the out of the
+box model. So at this point, my final model is the sklearn out of the
+box gradient boosting regressor.
+
+Just looking at the model performance, 0.987882 AUC is a fantastic ROC
+AUC score. There's less than 2% of improvement left to fight for in this
+model. It all depends on context, but I think generally in real world
+applications this would be past the point where most machine learning
+engineers stop investing time because the return on investment is so
+little.
+
+It's unfortunate for Red Hat that their competition contains a data
+leak, because the models in this competition are all built using
+information that won't be available to their actual work. So while my
+model is very dependable and would be highly valuable, it can't be
+used in any sort of real work setting.
 
 ### Justification
 In this section, your model’s final solution and its results should be compared to the benchmark you established earlier in the project using some type of statistical analysis. You should also justify whether these results and the solution are significant enough to have solved the problem posed in the project. Questions to ask yourself when writing this section:
