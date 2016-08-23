@@ -494,15 +494,39 @@ beginning of this project I defined beating that benchmark as my goal,
 and I did manage to successfully do that.
 
 ## V. Conclusion
-_(approx. 1-2 pages)_
 
 ### Free-Form Visualization
+I started working on this project before I realized there was a data
+leak, and for a while after learning about the problem I was a bit
+bummed that my final project wouldn't be on a real machine learning
+problem as a result of the leak. I stuck with the project because I'd
+already invested some time, and I'm very glad that I did for one
+specific reason in particular.
 
+The data leak provided a window into visualizing my model results that
+I could make a lot of sense looking at - meaning when I was able to look
+at a visualization and I have an intuition towards what that I would
+classify each point at if I were doing them by hand. The result was that
+I prepared my leak features with very specific intentions - I felt like
+I was "translating" the leak to my gradient boosting regressor - and
+then opening up my visualizations to see if my efforts had the intended
+effect. I also opened up the same visualization while I was tuning my
+algorithm parameters, and having that concrete view into the effects was
+really great for learning.
 
-In this section, you will need to provide some form of visualization that emphasizes an important quality about the project. It is much more free-form, but should reasonably support a significant result or characteristic about the problem that you want to discuss. Questions to ask yourself when writing this section:
-- _Have you visualized a relevant or important quality about the problem, dataset, input data, or results?_
-- _Is the visualization thoroughly analyzed and discussed?_
-- _If a plot is provided, are the axes, title, and datum clearly defined?_
+The visualization that has been my primary window throughout this
+project is the same one that we used above to look at the benchmark
+model. Again, each separate graph is one randomly selected group, with
+the y axis being the outcome label probability, and the x axis being the
+days ongoing.
+
+![Multiple Scatter Plots of the Final Model Predictions](images/output_group_scatters_final_model.png)
+
+I'm at a point on this project where I'm pretty happy with how my model
+is placing the predictions in this visualization. I think it agrees
+pretty well with how I would expect them to be, yet I also expect them
+to be better than anything I could do by hand because it's now
+accounting for extra features in addition to just the leak features.
 
 ### Reflection
 In this section, you will summarize the entire end-to-end problem solution and discuss one or two particular aspects of the project you found interesting or difficult. You are expected to reflect on the project as a whole to show that you have a firm understanding of the entire process employed in your work. Questions to ask yourself when writing this section:
