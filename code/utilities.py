@@ -127,7 +127,7 @@ def extract_leak_features(train, test):
     # Merge those means into the original sets
     df = pd.merge(df.reset_index(), lookup, how="left", on=["group_1", "date_act"]).set_index("activity_id")
 
-    # Get distance to each side as a proportion of the group range
+    # Get distance to each side as a proportion of the group density... weird math units but seems to work
     df["left_distance"] = (df["date_act"]-df["date_act_ffill"])/np.timedelta64(1, 'D')/df["density"]
     df["right_distance"] = (df["date_act_bfill"]-df["date_act"])/np.timedelta64(1, 'D')/df["density"]
 

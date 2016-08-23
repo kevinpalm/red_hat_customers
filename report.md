@@ -346,30 +346,127 @@ the leaderboard.
 Not to say that this project will be evaluated entirely off the Kaggle
 leaderboard, though. When cross validating locally using a split of the
 training data file, I'll be evaluating both my final model
-and the leak model. I intend to have a final model that beats the leak
+and the leak model. I hope to have a final model that beats the leak
 model for every random split of the data.
 
 ## III. Methodology
-_(approx. 3-5 pages)_
 
 ### Data Preprocessing
-In this section, all of your preprocessing steps will need to be clearly documented, if any were necessary. From the previous section, any of the abnormalities or characteristics that you identified about the dataset will be addressed and corrected here. Questions to ask yourself when writing this section:
-- _If the algorithms chosen require preprocessing steps like feature selection or feature transformations, have they been properly documented?_
-- _Based on the **Data Exploration** section, if there were abnormalities or characteristics that needed to be addressed, have they been properly corrected?_
-- _If no preprocessing is needed, has it been made clear why?_
+To start off my data preprocessing, I needed to translate the data leak
+into my estimator. I also needed to resplit my training and testing data
+so that the leaked rows from the testing data were instead included in
+the training data.
+
+Ultimately, I created four features to translate the leak. One is a
+boolean denoting the closest known label from the same group looking
+backwards in time, and one is the same looking forward. Then I created
+a feature which is equal to the distance to that backward point as a
+proportion of the overall group density (number of known labels from the
+group divided by the date range for the group). And again, a similar
+feature for looking forward. The units on those latter two features are
+a bit strange - technically it's days squared over activities - but it
+seems to work out for the model. Finally, for all the missing values I
+filled with -1, because those four features are otherwise always
+positive and gradient boosting should be fine to handle the -1s as their
+own case. The code for this stage of the preprocessing is located in
+utilities.py under extract_leak_features().
+
+Next, I tried to create some real features. For activity date I created
+one-hots for the day, weekday, and month. For people date I created
+one-hots for the month and the year. I got to copy over all the features
+that were already booleans, I scaled the one ordinal feature to be
+between 0 and 1 as well, and then I one-hot encoded the remaining
+categorical features that didn't contain more than 100 unique possible
+values. At this point, I'm dropping all the columns that contain NAs and
+too many categories to one-hot encode - I may revisit the issue later to
+see if I want to salvage anything. Finally, on this big giant data set,
+I run a PCA and only keep the 20 components of greatest variance. The
+code for this stage of the preprocessing is located under utilities.py
+under prep_features().
+
+So I end up with a total of 24 features in my final model.
 
 ### Implementation
-In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
-- _Is it made clear how the algorithms and techniques were implemented with the given datasets or input data?_
-- _Were there any complications with the original metrics or techniques that required changing prior to acquiring a solution?_
-- _Was there any part of the coding process (e.g., writing complicated functions) that should be documented?_
+I used the scikit-learn gradient boosting regressor implementation for
+my final model. Because sklearn handles all the heavy lifting, all my
+implementation required was:
+
+1. I extracted the leak features and resplit the data based on the leaks
+2. I extracted the principle components and joined them with the leak
+features
+3. I trained the gradient boost regressor on the outcomes and features,
+and appended the predictions to the test data frame
+4. I returned predictions and the leaked labels to the original testing
+index.
 
 ### Refinement
-In this section, you will need to discuss the process of improvement you made upon the algorithms and techniques you used in your implementation. For example, adjusting parameters for certain models to acquire improved solutions would fall under the refinement category. Your initial and final solutions should be reported, as well as any significant intermediate results as necessary. Questions to ask yourself when writing this section:
-- _Has an initial solution been found and clearly reported?_
-- _Is the process of improvement clearly documented, such as what techniques were used?_
-- _Are intermediate and final solutions clearly reported as the process is improved?_
+The out of the box gradient boosting regressor did beat the benchmark
+score when submitted to Kaggle at this point. It scored 0.987882 AUC,
+which is 0.000854 AUC higher than the benchmark. At the time of writing,
+that translates to 0.004842 AUC under the leading model, and in the top
+20% of the leaderboard.
 
+So next I started local testing with different parameter tunings. I set
+up my local test to split by people ID, with 2,000 people IDs and their
+corresponding activities going to each the training and the testing
+sets. For each parameter tuning, I took the average of three runs. The
+results of those tests are in the table below.
+
+| Learning Rate | N Estimators | Max Depth | Local Score (Delta Benchmark) | Kaggle Score (AUC) |
+|---------------|--------------|-----------|-------------------------------|--------------------|
+| 0.3           | 50           | 2         | 0.040443315                   | 0.987842           |
+| 0.3           | 100          | 2         | 0.008453154                   | 0.987832           |
+| 0.3           | 100          | 3         | 0.008119399                   | 0.987881           |
+| 0.3           | 150          | 4         | 0.00497335                    | 0.987732           |
+| 0.1           | 100          | 4         | 0.004393546                   | 0.987882           |
+| 0.2           | 150          | 3         | 0.003847023                   |                    |
+| 0.5           | 150          | 3         | 0.003387742                   |                    |
+| 0.4           | 50           | 3         | 0.00311012                    |                    |
+| 0.2           | 100          | 4         | 0.002753689                   |                    |
+| 0.5           | 100          | 2         | 0.002540337                   |                    |
+| 0.4           | 100          | 2         | 0.00240208                    |                    |
+| 0.2           | 50           | 3         | 0.002017758                   |                    |
+| 0.4           | 50           | 2         | 0.001837789                   |                    |
+| 0.3           | 150          | 2         | 0.001612978                   |                    |
+| 0.3           | 50           | 4         | 0.001266027                   |                    |
+| 0.5           | 100          | 3         | 0.00101742                    |                    |
+| 0.4           | 50           | 4         | 0.000894402                   |                    |
+| 0.5           | 100          | 4         | 0.000522531                   |                    |
+| 0.1           | 50           | 2         | 0.00012683                    |                    |
+| 0.1           | 100          | 2         | 0.000115795                   |                    |
+| 0.1           | 50           | 3         | 2.90E-05                      |                    |
+| 0.2           | 150          | 4         | -0.000111787                  |                    |
+| 0.5           | 50           | 3         | -0.000138638                  |                    |
+| 0.3           | 150          | 3         | -0.000510806                  |                    |
+| 0.4           | 150          | 2         | -0.000605365                  |                    |
+| 0.2           | 50           | 4         | -0.000685423                  |                    |
+| 0.5           | 150          | 2         | -0.000743299                  |                    |
+| 0.2           | 100          | 3         | -0.000752007                  |                    |
+| 0.5           | 150          | 4         | -0.000770367                  |                    |
+| 0.1           | 50           | 4         | -0.001132329                  |                    |
+| 0.4           | 150          | 4         | -0.001658237                  |                    |
+| 0.2           | 150          | 2         | -0.001841178                  |                    |
+| 0.4           | 100          | 3         | -0.002059669                  |                    |
+| 0.4           | 100          | 4         | -0.002239869                  |                    |
+| 0.1           | 100          | 3         | -0.00224634                   | 0.987882           |
+| 0.5           | 50           | 4         | -0.002260407                  |                    |
+| 0.5           | 50           | 2         | -0.003087298                  |                    |
+| 0.1           | 150          | 3         | -0.00349696                   |                    |
+| 0.1           | 150          | 4         | -0.005492377                  |                    |
+| 0.2           | 100          | 2         | -0.006507676                  |                    |
+| 0.3           | 100          | 4         | -0.009030611                  |                    |
+| 0.4           | 150          | 3         | -0.010184013                  |                    |
+| 0.1           | 150          | 2         | -0.012296184                  |                    |
+| 0.3           | 50           | 3         | -0.012841561                  |                    |
+| 0.2           | 50           | 2         | -0.015455808                  |                    |
+
+I decided to optimize for the difference from the benchmark model,
+because the small size of the samples introduced a lot of fluctuation in
+AUC scores but the benchmark model fluctuated right with it. The best
+ones I did try submitting to Kaggle, but while they do all beat the
+benchmark, none of them improve beyond the out of the box model. So at
+this point, my final model is the sklearn out of the box gradient
+boosting regressor.
 
 ## IV. Results
 _(approx. 2-3 pages)_

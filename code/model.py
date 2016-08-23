@@ -29,7 +29,7 @@ def model(train, test):
 
     # Train an estimator
     print("Training the estimator...")
-    estimator = GradientBoostingRegressor(learning_rate=0.3, n_estimators=100, max_depth=2)
+    estimator = GradientBoostingRegressor(max_depth=4)
     estimator.fit(train_x, train_y)
 
     # Predict and set the index back to the original testing index
