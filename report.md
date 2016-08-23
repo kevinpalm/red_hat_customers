@@ -472,22 +472,30 @@ do all beat the benchmark, none of them improve beyond the out of the
 box model. So at this point, my final model is the sklearn out of the
 box gradient boosting regressor.
 
-Just looking at the model performance, 0.987882 AUC is a fantastic ROC
-AUC score. There's less than 2% of improvement left to fight for in this
-model. It all depends on context, but I think generally in real world
-applications this would be past the point where most machine learning
-engineers stop investing time because the return on investment is so
-little.
+On the local miniature tests, the final model seems to beat the
+benchmark model about 2/3rds of the time. So at least it is overall
+better. That beats the benchmark model while using the full training set
+is more compelling.
+
+Switching to the big picture here, just looking at the model performance
+0.987882 AUC is a fantastic ROC AUC score. There's less than 2% of
+improvement left to fight for in this model. It all depends on context,
+but I think generally in real world applications this would be past the
+point where most machine learning engineers stop investing time because
+the return on investment is so little.
+
+At least it would be an excellent AUC score if it were a real model.
 
 It's unfortunate for Red Hat that their competition contains a data
 leak, because the models in this competition are all built using
 information that won't be available to their actual work. So while my
-model is very dependable and would be highly valuable, it can't be
+model seems very dependable and would be highly valuable, it can't be
 used in any sort of real work setting.
 
 In terms of the robustness of the model, it's not too bad. When training
 on only 5,000 people's data, the AUC is seems pretty constantly plus or
-minus 0.025 of 0.9 AUC.
+minus 0.025 of 0.9 AUC. This seems reasonable for such a reduction of
+training data.
 
 ### Justification
 The benchmark model scores 0.987028 AUC and my model scores 0.987882
