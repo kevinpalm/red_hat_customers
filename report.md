@@ -564,19 +564,19 @@ it offered a very unique learning experience and really ended up
 reinforcing the value of exploratory data analysis.
 
 ### Improvement
-In this section, you will need to provide discussion as to how one aspect of the implementation you designed could be improved. As an example, consider ways your implementation can be made more general, and what would need to be modified. You do not need to make this improvement, but the potential solutions resulting from these changes are considered and compared/contrasted to your current solution. Questions to ask yourself when writing this section:
-- _Are there further improvements that could be made on the algorithms or techniques you used in this project?_
-- _Were there algorithms or techniques you researched that you did not know how to implement, but would consider using if you knew how?_
-- _If you used your final solution as the new benchmark, do you think an even better solution exists?_
+I think gradient boosting really is the way to go with this problem, but
+I'm less certain about my decision to use PCA as my method for
+dimensionality reduction on those additional features. Simple feature
+selection might have been a better decision. My reasoning is that the
+bulk of my data points are "covered" by the leak features (their tree
+building probably doesn't use any of the additional features), so the
+emphasis that PCA puts on explaining the most amount of variance is
+probably wasting precious space in my final data set. Another
+possibility is that I should only fit my PCA component using rows of
+data which are difficult for my model to predict using just the leak
+features.
 
------------
-
-**Before submitting, ask yourself. . .**
-
-- Does the project report you’ve written follow a well-organized structure similar to that of the project template?
-- Is each section (particularly **Analysis** and **Methodology**) written in a clear, concise and specific fashion? Are there any ambiguous terms or phrases that need clarification?
-- Would the intended audience of your project be able to understand your analysis, methods, and results?
-- Have you properly proof-read your project report to assure there are minimal grammatical and spelling mistakes?
-- Are all the resources used for this project correctly cited and referenced?
-- Is the code that implements your solution easily readable and properly commented?
-- Does the code execute without error and produce results similar to those reported?
+Another possibility is switching from the sklearn gradient boost
+implimentation to xgboost. When I finish with this project for my
+nanodegree purposes, I probably will convert the project to python 3 and
+experiment further.
