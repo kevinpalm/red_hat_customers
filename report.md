@@ -407,7 +407,7 @@ that translates to 0.004842 AUC under the leading model, and in the top
 20% of the leaderboard.
 
 So next I started local testing with different parameter tunings. I set
-up my local test to split by people ID, with 2,000 people IDs and their
+up my local test to split by people ID, with 5,000 people IDs and their
 corresponding activities going to each the training and the testing
 sets. For each parameter tuning, I took the average of three runs. The
 results of those tests are in the table below.
@@ -485,13 +485,18 @@ information that won't be available to their actual work. So while my
 model is very dependable and would be highly valuable, it can't be
 used in any sort of real work setting.
 
+In terms of the robustness of the model, it's not too bad. When training
+on only 5,000 people's data, the AUC is seems pretty constantly plus or
+minus 0.025 of 0.9 AUC.
+
 ### Justification
 The benchmark model scores 0.987028 AUC and my model scores 0.987882
-AUC, so while my model isn't the best it does successfully perform
-better than some tricky NaN filling. It's not a huge difference, but in
-terms of eliminating the degree of error remaining that's 6.6%. At the
-beginning of this project I defined beating that benchmark as my goal,
-and I did manage to successfully do that.
+AUC when using all of the training data, so while my model isn't the
+best it does successfully perform better than some tricky NaN filling.
+It's not a huge difference, but in terms of eliminating the degree of
+error remaining that's 6.6%. At the beginning of this project I defined
+beating that benchmark as my goal, and I did manage to successfully do
+that.
 
 ## V. Conclusion
 
@@ -529,11 +534,34 @@ to be better than anything I could do by hand because it's now
 accounting for extra features in addition to just the leak features.
 
 ### Reflection
-In this section, you will summarize the entire end-to-end problem solution and discuss one or two particular aspects of the project you found interesting or difficult. You are expected to reflect on the project as a whole to show that you have a firm understanding of the entire process employed in your work. Questions to ask yourself when writing this section:
-- _Have you thoroughly summarized the entire process you used for this project?_
-- _Were there any interesting aspects of the project?_
-- _Were there any difficult aspects of the project?_
-- _Does the final model and solution fit your expectations for the problem, and should it be used in a general setting to solve these types of problems?_
+For this project, the start had a huge component of EDA. The leak
+features were the most critical to understand because some 97% of the
+performance of the final models in this competition comes directly from
+those features, but in addition there was a big challenge to understand
+the other features well enough to engineer meaningful, efficient
+features that don't overwhelm your model in terms of dimensions. After
+I felt that I had a grasp on the data, I went about engineering features
+to represent the leaked data, and then I engineered additional features
+which I used PCA to reduce down to 20. I then trained a sci-kit learn
+gradient boosting regressor model to create final predictions.
+
+The most challenging aspect of this project was understanding and
+dealing with the data leak. The reason I ended up reimplementing the
+benchmark model from loiso was to make sure that I was understanding the
+nature of the leak (and to speed up the python implementation). Once I
+felt like I had a good handle on what was wrong with this data set, I
+was able to section apart my feature engineering into into leak features
+and regular features. This helped me make better sense of the problem,
+and hopefully to section away my learnings into what's useful generally
+and what I can only apply to this specific kind of problem.
+
+My model doesn't have any general, real-world applications. Because of
+the data leak, this model was built using information that won't be
+available in a real-world setting. Otherwise, I think my model is pretty
+decent! My model does fit my expectations and I did meet my goals for
+this project. I'm glad I stuck through it despite the data leak, because
+it offered a very unique learning experience and really ended up
+reinforcing the value of exploratory data analysis.
 
 ### Improvement
 In this section, you will need to provide discussion as to how one aspect of the implementation you designed could be improved. As an example, consider ways your implementation can be made more general, and what would need to be modified. You do not need to make this improvement, but the potential solutions resulting from these changes are considered and compared/contrasted to your current solution. Questions to ask yourself when writing this section:

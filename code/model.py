@@ -48,8 +48,8 @@ def local_test(train, test):
     shuffle(people)
 
     # Split the data into new training and testing sets
-    test = train.loc[train["people_id"].isin(people[-2000:]), train.columns.values]
-    train = train.loc[train["people_id"].isin(people[:2000]), train.columns.values]
+    test = train.loc[train["people_id"].isin(people[-5000:]), train.columns.values]
+    train = train.loc[train["people_id"].isin(people[:5000]), train.columns.values]
 
     # Get predictions
     benchmark_predicts = benchmark_model(train, test.drop("outcome", axis=1))["outcome"]
@@ -73,20 +73,20 @@ def main():
     # Load in the data set by merging together
     train, test = simple_load()
 
-    # Run 3 quick local tests
+    # Run 3 local tests... takes about 2 minutes
     scores = []
     for i in range(3):
         print("Local test {}...".format(i+1))
         scores.append(local_test(train, test))
-    print "The average model score was {} over the benchmark.".format(sum(scores)/len(scores))
+    print "The average model score was {} AUC over the benchmark.".format(sum(scores)/len(scores))
 
-    # Write a benchmark file to the submissions folder
-    print("Starting the benchmark model...")
-    benchmark_model(train, test).to_csv("../output/benchmark_submission.csv", index=False)
-
-    # Write model predictions file to the submissions folder
-    print("Starting the main model...")
-    model(train, test).to_csv("../output/kpalm_submission.csv", index=False)
+    # # Write a benchmark file to the submissions folder... takes about 30 seconds
+    # print("Starting the benchmark model...")
+    # benchmark_model(train, test).to_csv("../output/benchmark_submission.csv", index=False)
+    #
+    # # Write model predictions file to the submissions folder... takes about 20 minutes
+    # print("Starting the main model...")
+    # model(train, test).to_csv("../output/kpalm_submission.csv", index=False)
 
 
 if __name__ == "__main__":
