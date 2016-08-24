@@ -483,8 +483,25 @@ that translates to 0.004842 AUC under the leading model, and in the top
 So next I started local testing with different parameter tunings. I set
 up my local test to split by people ID, with 5,000 people IDs and their
 corresponding activities going to each the training and the testing
-sets. For each parameter tuning, I took the average of three runs. The
-results of those tests are in the table below.
+sets. I did not worry about keeping the output labels proportionally
+stratified in my local tests, on the reasoning that the gradient
+boosting model and the leak model are fundamentally quite similar and 
+so my model and my comparison point would be similarly affected by each
+sampling. 
+
+I focused on three parameters - learning rate, n estimators, and max
+depth - but I also dabbled in whitening my PCA outputs and changing the
+gradient boosting loss function. The latter two had significantly
+negative effects on my final output, so I abandoned them by the time I
+was conducting structured tests. The table below is a complete matrix of
+the combinations of:
+
+* learning rate = [0.1, 0.2, 0.3, 0.4, 0.5]
+* n estimators = [50, 100, 150]
+* max depth = [2, 3, 4]
+
+In the table below, the local score is actually an average of three
+runs per tuning.
 
 | Learning Rate | N Estimators | Max Depth | Local Score (Delta Benchmark) | Kaggle Score (AUC) |
 |---------------|--------------|-----------|-------------------------------|--------------------|
