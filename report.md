@@ -6,8 +6,7 @@ August, 2016
 ## I. Definition
 
 ### Project Overview
-The official project overview can be found on the
-[**competition description page**](https://www.kaggle.com/c/predicting-red-hat-business-value).
+[**The official project overview can be found on the competition description page**](https://www.kaggle.com/c/predicting-red-hat-business-value).
 The following overview is just my own paraphrasing and
 interpretation of the competition goals/context.
 
@@ -84,11 +83,14 @@ data sets.
 2. **Feature preparation** - I'll format the data in an appropriate
 manner for my final model. Exactly how I go about this will be hugely
 reliant on the EDA step, as how I condition features and which algorithm
-I intend to use will be dependant on what I've learned so far.
+I intend to use will be dependant on what I've learned so far. Because
+of the relatively large size of this data set, I will likely need to use
+some method of dimensionality reduction, such as PCA.
 3. **Early Modelling** - I'll create a model that outputs predictions,
 using a subset of the training set so that I can use classification
-metrics on the leftover training data. I'll use the metric scores to
-tune my model.
+metrics on the leftover training data. At this point my top two expected
+algorithms that I might use to address this problem are linear SVMs or
+gradient boosting. I'll use the metric scores to tune my model. 
 4. **Model** - I'll apply my model testing data which outputs a
 predictions file in the correct format for submission to kaggle.com,
 and submit the entry.
