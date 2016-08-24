@@ -481,6 +481,12 @@ sailing. By the time that I was feature engineering, I already had a
 pretty clear idea of what I wanted to try first because of all the EDA
 that I did at the beginning of the project.
 
+I also didn't originally think to scale down the one ordinal feature of
+the characteristics when I originally went to do PCA. The result was
+that my principle components of 0-1s would get completely dominated by
+the one column of 0-100s. Thanks to dpace for taking the time to review
+my kernel and help me with that!
+
 ### Refinement
 The out of the box gradient boosting regressor did beat the benchmark
 score when submitted to Kaggle at this point. It scored 0.987882 AUC,
