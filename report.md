@@ -475,17 +475,18 @@ and appended the predictions to the test data frame
 4. I returned predictions and the leaked labels to the original testing
 index.
 
-I had a little difficulty with memory management while I was setting up
-the PCA stage of this project, but otherwise I had pretty smooth
-sailing. By the time that I was feature engineering, I already had a
-pretty clear idea of what I wanted to try first because of all the EDA
-that I did at the beginning of the project.
+One of the obstacles I hit during preprocessing was that I didn't think
+to scale down the one ordinal feature of the characteristics when I
+originally went to do PCA. The result was that my principle components
+of 0-1s would get completely dominated by the one column of 0-100s.
+Thanks to dpace for taking the time to review my kernel and help me with
+that!
 
-I also didn't originally think to scale down the one ordinal feature of
-the characteristics when I originally went to do PCA. The result was
-that my principle components of 0-1s would get completely dominated by
-the one column of 0-100s. Thanks to dpace for taking the time to review
-my kernel and help me with that!
+I also had a little difficulty with memory management while I was
+setting up the PCA stage of this project, but otherwise I had pretty
+smooth sailing. By the time that I was feature engineering, I already
+had a pretty clear idea of what I wanted to try first because of all the
+EDA that I did at the beginning of the project.
 
 ### Refinement
 The out of the box gradient boosting regressor did beat the benchmark
