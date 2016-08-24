@@ -285,17 +285,30 @@ to use the approach of translating the leak (and other relevant
 features) into a machine learning model!
 
 So what will my final regressor be? I think this is a classically good
-use case for gradient boosting. I think it'll be very doable to set up
-a bunch of decent predictor features like normal, but also include a
+use case for gradient boosting. Gradient boosting works by starting off
+with a weak learner, say a short decision tree. It does its best to
+apply that little decision tree and starts off with a broad stroke that
+correctly classifies the most data points that it can. But inevitably
+there will be points that don't fit the major trend. So next, the
+algorithm focuses in on those points that it classified wrong by
+calculating what's called a "residual", which is just a measurement
+of how wrong it was for each point. Then it does its best to apply
+another weak learner, but this time it fits to the residual. It adds up
+the first weak learner and the second weak learner, and calculates
+a residual for their combined explanatory power. Then if fits a third
+weak learner on the current residual. It repeats this again and again
+until it reaches some maximum allowed number if iterations, or it
+explains the training data perfectly. 
+
+So for the problem at hand, I think it'll be very doable to set up a
+bunch of decent predictor features like normal, but also include a
 feature suggesting which label the leak would classify and some
 measure(s) of that label's dependability. Say that I created a feature
 that was a scale of 1-100 for how dependable the leak approach was for
-each point - a gradient boosting regressor would train individual
-decision trees for each step along that scale of 1-100. Hopefully the
-end effect would be that the leak approach trumps all else for some of
-the higher measures of dependability, and the data points that are more
-uncertain from the leak perspective can be taken in context of the other
-features. At least that would be a simplified way of approaching it.
+each point - a gradient boosting regressor might train individual
+decision trees for each step along that scale of 1-100. At least that
+would be a simplified possible outcome of using gradient boosting on
+this problem.
 
 Some specific examples of what could constitute those measures of the
 leak feature's dependability might be:
