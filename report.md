@@ -7,7 +7,7 @@ August, 2016
 
 ### Project Overview
 The official project overview can be found on the
-[competition description page](https://www.kaggle.com/c/predicting-red-hat-business-value).
+[**competition description page**](https://www.kaggle.com/c/predicting-red-hat-business-value).
 The following overview is just my own paraphrasing and
 interpretation of the competition goals/context.
 
@@ -98,7 +98,7 @@ and submit the entry.
 This Kaggle competition is scored on area under receiver operating
 characteristic curve (AUC). AUC is a bit less intuitive of a
 classification metric, but in the words of the top reply to
-[this excellent blog post on the subject](http://fastml.com/what-you-wanted-to-know-about-auc/):
+[**this excellent blog post on the subject**](http://fastml.com/what-you-wanted-to-know-about-auc/):
 
 > Pick a random negative and a random positive example; The AUC gives
 > you the probability that your classifier assigns a higher score to the
@@ -118,7 +118,7 @@ Understanding why that this competition is scored on AUC over, say, F1
 score (which is also able to deal with imbalanced label frequencies) is
 less clear. The best discussion I've found comparing F1 and AUC to each
 other is from
-[this stackoverflow thread](http://stackoverflow.com/questions/34698161/how-to-interpret-almost-perfect-accuracy-and-auc-roc-but-zero-f1-score-precisio).
+[**this stackoverflow thread**](http://stackoverflow.com/questions/34698161/how-to-interpret-almost-perfect-accuracy-and-auc-roc-but-zero-f1-score-precisio).
 My best guess right now is that Red Hat must be interested in a model
 that will perform well as conditions and label frequencies experience
 structural change over time, and that the changing thresholds comprising
@@ -159,7 +159,7 @@ date field for people ranges from 2020-05-18 through 2023-08-31, so
 whatever people date represents we have about 3 years worth of it.
 
 A
-[really fantastic exploration of the relationship between the frequency of these dates and the output labels that I really can't outdo](https://www.kaggle.com/anokas/predicting-red-hat-business-value/time-travel-eda)
+[**really fantastic exploration of the relationship between the frequency of these dates and the output labels that I really can't outdo**](https://www.kaggle.com/anokas/predicting-red-hat-business-value/time-travel-eda)
 was created by Kaggle user anokas. The big take home observations of the
 analysis where:
 
@@ -199,9 +199,9 @@ For the people group columns, there are 29,899 unique groups in the
 training data and 11,640 unique groups in the testing data. There's a
 huge focus on this feature right now on the Kaggle competition page,
 because the feature in conjunction with the action date
-[was recently demonstrated by Kagglers loiso and team as able to be used to achieve ~0.987 AUC with just some logic and simple statistics](https://www.kaggle.com/loisso/predicting-red-hat-business-value/lb-0-987-group-1-and-date-trick/output).
+[**was recently demonstrated by Kagglers loiso and team as able to be used to achieve ~0.987 AUC with just some logic and simple statistics**](https://www.kaggle.com/loisso/predicting-red-hat-business-value/lb-0-987-group-1-and-date-trick/output).
 A really great
-[explanation of the technique was written by dmi3kno](https://www.kaggle.com/dmi3kno/predicting-red-hat-business-value/redhat-hack-in-plain-english-eda).
+[**explanation of the technique was written by dmi3kno**](https://www.kaggle.com/dmi3kno/predicting-red-hat-business-value/redhat-hack-in-plain-english-eda).
 The whole thing is getting called a hack or a leak, but the
 overall consensus is that the discovery doesn't necessarily break the
 competition. It just makes the competition a small numbers game about
@@ -229,7 +229,7 @@ less than 50 types. Twenty-eight are booleans. And one is an integer
 class, with values from 0 to 100.
 
 I published
-[my own kernel exploring the people characteristics exclusively, and whether or not it makes sense to use decomposition techniques on them prior to joining them into the data set](https://www.kaggle.com/kevinpalm/predicting-red-hat-business-value/people-eda-and-decomposition).
+[**my own kernel exploring the people characteristics exclusively, and whether or not it makes sense to use decomposition techniques on them prior to joining them into the data set**](https://www.kaggle.com/kevinpalm/predicting-red-hat-business-value/people-eda-and-decomposition).
 I found that all of the characteristics in the people data set were
 interrelated. After expanding all the features out to be one-hot encoded
 (and for the case of the integer column, min-max scaled) there were 160
@@ -242,14 +242,14 @@ characteristics while keeping my dimensions under control will work out.
 Because the data leak is going to be an important part of this
 competition, and because it's a little tricky to understand exactly how
 the leak happened, I'm devoting this section to my benchmark model
-[which is inspired by and very similar to the loisso team's leak model](https://www.kaggle.com/loisso/predicting-red-hat-business-value/lb-0-987-group-1-and-date-trick/output).
+[**which is inspired by and very similar to the loisso team's leak model**](https://www.kaggle.com/loisso/predicting-red-hat-business-value/lb-0-987-group-1-and-date-trick/output).
 
 The following graphic is five separate scatter plots, each of a randomly
 selected people group from the "group_1" feature, with predictions from
 my benchmark model. The graph was definitely inspired by one that
-[dmi3kno created originally](https://www.kaggle.com/dmi3kno/predicting-red-hat-business-value/redhat-hack-in-plain-english-eda),
+[**dmi3kno created originally**](https://www.kaggle.com/dmi3kno/predicting-red-hat-business-value/redhat-hack-in-plain-english-eda),
 but this one pertains specifically to 
-[my implementation of the leak/exploit model](https://www.kaggle.com/kevinpalm/predicting-red-hat-business-value/simplified-leak-starter-template/output).
+[**my implementation of the leak/exploit model**](https://www.kaggle.com/kevinpalm/predicting-red-hat-business-value/simplified-leak-starter-template/output).
 
 ![Multiple Scatter Plots of the Benchmark/Leak Model Predictions](images/output_group_scatters.png)
 
@@ -319,7 +319,7 @@ definitely can't just one-hot encode the features that have 1,000+
 categories, that will be way too many dimensions. So it'll be a
 combination of one hot encoding, and for the big ones I'll be using
 feature hashing or
-[leave one out encoding](https://www.kaggle.com/c/caterpillar-tube-pricing/forums/t/15748/strategies-to-encode-categorical-variables-with-many-categories).
+[**leave one out encoding**](https://www.kaggle.com/c/caterpillar-tube-pricing/forums/t/15748/strategies-to-encode-categorical-variables-with-many-categories).
 * Integer characteristics - there's only one of these. I expect to just
 end up scaling this feature, but I may experiment with one-hot encoding
 if I end up deviating from the gradient boosting regressor.
