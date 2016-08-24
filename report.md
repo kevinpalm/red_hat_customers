@@ -397,7 +397,9 @@ too many categories to one-hot encode - I may revisit the issue later to
 see if I want to salvage anything.
 
 The features data set is very large at this point of the script. It
-contains 227 columns which are:
+contains 227 columns, all with values between 0 and 1. The column names
+are somewhat descriptive (considering they're anonymized variables...),
+so I've listed them below.
 
 ['act_day_1' 'act_day_10' 'act_day_11' 'act_day_12' 'act_day_13'
  'act_day_14' 'act_day_15' 'act_day_16' 'act_day_17' 'act_day_18'
@@ -472,6 +474,12 @@ features
 and appended the predictions to the test data frame
 4. I returned predictions and the leaked labels to the original testing
 index.
+
+I had a little difficulty with memory management while I was setting up
+the PCA stage of this project, but otherwise I had pretty smooth
+sailing. By the time that I was feature engineering, I already had a
+pretty clear idea of what I wanted to try first because of all the EDA
+that I did at the beginning of the project.
 
 ### Refinement
 The out of the box gradient boosting regressor did beat the benchmark
