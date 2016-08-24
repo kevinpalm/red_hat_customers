@@ -74,19 +74,19 @@ def main():
     train, test = simple_load()
 
     # Run 3 local tests... takes about 2 minutes
-    scores = []
-    for i in range(3):
-        print("Local test {}...".format(i+1))
-        scores.append(local_test(train, test))
-    print "The average model score was {} AUC over the benchmark.".format(sum(scores)/len(scores))
+    # scores = []
+    # for i in range(3):
+    #     print("Local test {}...".format(i+1))
+    #     scores.append(local_test(train, test))
+    # print "The average model score was {} AUC over the benchmark.".format(sum(scores)/len(scores))
 
     # # Write a benchmark file to the submissions folder... takes about 30 seconds
     # print("Starting the benchmark model...")
     # benchmark_model(train, test).to_csv("../output/benchmark_submission.csv", index=False)
     #
-    # # Write model predictions file to the submissions folder... takes about 20 minutes
-    # print("Starting the main model...")
-    # model(train, test).to_csv("../output/kpalm_submission.csv", index=False)
+    # Write model predictions file to the submissions folder... takes about 20 minutes
+    print("Starting the main model...")
+    model(train, test).to_csv("../output/kpalm_submission.csv", index=False)
 
 
 if __name__ == "__main__":

@@ -228,6 +228,9 @@ def prep_features(train, test, extra_outcomes=None):
         if column not in train_feats.columns.values:
             test_feats = test_feats.drop(column, axis=1)
 
+    print len(train_feats.columns.values)
+    print train_feats.columns.values
+
     # Let's get some PCA done on this giant data set, incrementally for my poor little RAM sticks
     decomp = IncrementalPCA(n_components=20)
     decomp.fit(train_feats, outcomes)
