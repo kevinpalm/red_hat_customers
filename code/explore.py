@@ -6,6 +6,17 @@ import numpy as np
 
 def labelplot(train, test):
 
+    """
+
+    :param train: pandas.DataFrame
+        The kaggle training dataset joined with the kaggle people dataset
+    :param test:  pandas.DataFrame
+        The kaggle testing dataset joined with the kaggle people dataset
+    :return:
+        None
+
+    """
+
     # Make a frequency histogram for the output labels
     train["outcome"].plot.hist(bins=2, figsize=(3, 3))
     plt.tight_layout()
@@ -15,6 +26,17 @@ def labelplot(train, test):
 
 
 def typeplot(train, test):
+
+    """
+
+    :param train: pandas.DataFrame
+        The kaggle training dataset joined with the kaggle people dataset
+    :param test:  pandas.DataFrame
+        The kaggle testing dataset joined with the kaggle people dataset
+    :return:
+        None
+
+    """
 
     # Create a groupby object for the chart
     df = train.groupby(["activity_category", "outcome"])["activity_id"].count()
@@ -30,6 +52,17 @@ def typeplot(train, test):
     plt.clf()
 
 def groupplot(train, test):
+
+    """
+
+    :param train: pandas.DataFrame
+        The kaggle training dataset joined with the kaggle people dataset
+    :param test:  pandas.DataFrame
+        The kaggle testing dataset joined with the kaggle people dataset
+    :return:
+        None
+
+    """
 
     # Drop unneeded features and add the source
     df = train[["date_act", "group_1", "outcome"]]

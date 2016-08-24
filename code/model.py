@@ -6,6 +6,18 @@ from random import shuffle
 
 def benchmark_model(train, test):
 
+    """
+
+    :param train: pandas.DataFrame
+        The kaggle training dataset joined with the kaggle people dataset
+    :param test:  pandas.DataFrame
+        The kaggle testing dataset joined with the kaggle people dataset
+    :return:
+        test.reset_index()[["activity_id", "outcome"]] : pandas.DataFrame
+            Formatted outcome predictions
+
+    """
+
     # Try to just infer the correct dates using the data leak
     test["outcome"] = group_decision(train, test)
 
@@ -16,6 +28,18 @@ def benchmark_model(train, test):
 
 
 def model(train, test):
+
+    """
+
+    :param train: pandas.DataFrame
+        The kaggle training dataset joined with the kaggle people dataset
+    :param test:  pandas.DataFrame
+        The kaggle testing dataset joined with the kaggle people dataset
+    :return:
+        test.reset_index()[["activity_id", "outcome"]] : pandas.DataFrame
+            Formatted outcome predictions
+
+    """
 
     # Prep the features that are engineered to translate the data leak
     print("Starting the leak features extract...")
@@ -42,6 +66,18 @@ def model(train, test):
     return test.reset_index()[["activity_id", "outcome"]]
 
 def local_test(train, test):
+
+    """
+
+    :param train: pandas.DataFrame
+        The kaggle training dataset joined with the kaggle people dataset
+    :param test:  pandas.DataFrame
+        The kaggle testing dataset joined with the kaggle people dataset
+    :return:
+        model_score-benchmark_score : float
+            Difference between the model score and the benchmark score
+
+    """
 
     # Shuffle a list of people IDs for splitting, because the kaggle sets seem to be split on people_id
     people = list(set(train["people_id"].tolist()))
@@ -74,19 +110,19 @@ def main():
     train, test = simple_load()
 
     # Run 3 local tests... takes about 2 minutes
-    # scores = []
-    # for i in range(3):
-    #     print("Local test {}...".format(i+1))
-    #     scores.append(local_test(train, test))
-    # print "The average model score was {} AUC over the benchmark.".format(sum(scores)/len(scores))
+    scores = []
+    for i in range(3):
+        print("Local test {}...".format(i+1))
+        scores.append(local_test(train, test))
+    print "The average model score was {} AUC over the benchmark.".format(sum(scores)/len(scores))
 
     # # Write a benchmark file to the submissions folder... takes about 30 seconds
     # print("Starting the benchmark model...")
     # benchmark_model(train, test).to_csv("../output/benchmark_submission.csv", index=False)
     #
-    # Write model predictions file to the submissions folder... takes about 20 minutes
-    print("Starting the main model...")
-    model(train, test).to_csv("../output/kpalm_submission.csv", index=False)
+    # # Write model predictions file to the submissions folder... takes about 20 minutes
+    # print("Starting the main model...")
+    # model(train, test).to_csv("../output/kpalm_submission.csv", index=False)
 
 
 if __name__ == "__main__":
