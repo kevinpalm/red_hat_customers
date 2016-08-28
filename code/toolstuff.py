@@ -161,8 +161,8 @@ def extract_leak_features(train, test):
     df = pd.merge(df.reset_index(), lookup, how="left", on=["group_1", "date_act"]).set_index("activity_id")
 
     # Get distance to each side as a proportion of the group density... weird math units but seems to work
-    df["left_distance"] = (df["date_act"]-df["date_act_ffill"])/np.timedelta64(1, 'D')/df["density"]
-    df["right_distance"] = (df["date_act_bfill"]-df["date_act"])/np.timedelta64(1, 'D')/df["density"]
+    df["right_distance"] = (df["date_act"]-df["date_act_ffill"])/np.timedelta64(1, 'D')/df["density"]
+    df["left_distance"] = (df["date_act_bfill"]-df["date_act"])/np.timedelta64(1, 'D')/df["density"]
 
     # Get values to each side
     df["left_outcome"] = df["outcome_bfill"]
@@ -221,9 +221,9 @@ def prep_features(train, test):
     train = train.drop(["date", "date_act"], axis=1)
     test = test.drop(["date", "date_act"], axis=1)
 
-    # Drop any columns with nans
-    train = train.dropna(axis=1)
-    test = test.dropna(axis=1)
+    # # Drop any columns with nans
+    # train = train.dropna(axis=1)
+    # test = test.dropna(axis=1)
 
     # Also remove group_1 since it's already used, and people_id by association. Also, outcome isn't a training feature
     outcomes = train["outcome"]
@@ -245,18 +245,27 @@ def prep_features(train, test):
         if train[column].dtype == bool:
             train_feats[column] = train[column].astype(int)
             train = train.drop(column, axis=1)
-        elif len(set(train[column].tolist())) < 100:
-            train_feats = train_feats.join(pd.get_dummies(column + "_" + train[column]))
+        # elif len(set(train[column].tolist())) < 100:
+        else:
+            train_feats = train_feats.join(pd.get_dummies(column + "_" + train[column].astype(str)))
             train = train.drop(column, axis=1)
-
 
     for column in test.columns.values:
         if test[column].dtype == bool:
             test_feats[column] = test[column].astype(int)
             test = test.drop(column, axis=1)
-        elif len(set(test[column].tolist())) < 100:
-            test_feats = test_feats.join(pd.get_dummies(column + "_" + test[column]))
+        # elif len(set(test[column].tolist())) < 100:
+        else:
+            test_feats = test_feats.join(pd.get_dummies(column + "_" + test[column].astype(str)))
             test = test.drop(column, axis=1)
+
+    # Drop all the columns with nan in the title
+    for column in train_feats.columns.values:
+        if "nan" in column:
+            train_feats = train_feats.drop(column, axis=1)
+    for column in test_feats.columns.values:
+        if "nan" in column:
+            test_feats = test_feats.drop(column, axis=1)
 
     # Cross check for any columns that don't exist in both sides of the split
     for column in train_feats.columns.values:
@@ -265,8 +274,10 @@ def prep_features(train, test):
     for column in test_feats.columns.values:
         if column not in train_feats.columns.values:
             test_feats = test_feats.drop(column, axis=1)
+            
+    print(len(train_feats.columns.values))
 
-    # Let's get some PCA done on this giant data set, incrementally for my poor little RAM sticks
+    # Let's get some decomposition done on this big dataset
     decomp = PLSRegression()
     decomp.fit(train_feats, outcomes)
 
