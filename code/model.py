@@ -1,6 +1,12 @@
-from utilities import *
-from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.metrics import roc_auc_score
+from tools import *
+from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.pipeline import Pipeline
+from sklearn.feature_selection import VarianceThreshold
+from sklearn.preprocessing import MinMaxScaler, RobustScaler
+from sklearn.linear_model import LinearRegression, Ridge, ElasticNet
+from sklearn.svm import SVR
+from sklearn.metrics import roc_auc_score, make_scorer
 from random import shuffle
 
 
@@ -45,22 +51,49 @@ def model(train, test):
     print("Starting the leak features extract...")
     train_x, train_y, test_x = extract_leak_features(train, test)
 
-    # Get and join the regular feature principle components
-    print("Starting the features extract and PCA...")
-    train_feats, test_feats = prep_features(train, test, extra_outcomes=train_y)
-    train_x = train_x.join(train_feats)
-    test_x = test_x.join(test_feats)
+    # Divide up the dataset into types
+    train_x["genre"] = train_x["left_outcome"].astype(str) + "-" + train_x["right_outcome"].astype(str)
+    test_x["genre"] = test_x["left_outcome"].astype(str) + "-" + test_x["right_outcome"].astype(str)
 
-    # Train an estimator
-    print("Training the estimator...")
-    estimator = GradientBoostingRegressor(max_depth=4)
-    estimator.fit(train_x, train_y)
-
-    # Predict and set the index back to the original testing index
-    print("Making predictions...")
-    test_x["outcome"] = estimator.predict(test_x)
-    train_x["outcome"] = train_y
+    # Create a master list for appending predictions
     df = train_x.append(test_x)
+    df["outcome"] = train_y
+    df = df[["outcome"]]
+
+    # Iterate through the genres so as to model separately
+    for genre in list(set(train_x["genre"].tolist())):
+        print("Modeling {} type data points...".format(genre))
+
+        # Split the leak data by genre
+        sub_train_x = train_x[train_x["genre"] == genre]
+        sub_train_y = train_y[train_y.index.isin(sub_train_x.index)]
+        sub_test_x = test_x[test_x["genre"] == genre]
+
+        # Get feature data that pertains to the genre
+        subtrain, subtest = subsplit_genre(train, test, sub_train_x[["genre"]], sub_test_x[["genre"]], sub_train_y)
+
+        # Get and join the regular feature principle components
+        train_feats, test_feats = prep_features(subtrain, subtest)
+        sub_train_x = sub_train_x.join(train_feats)
+        sub_test_x = sub_test_x.join(test_feats)
+
+        # Drop the genres and the columns with nans
+        sub_train_x = sub_train_x.drop("genre", axis=1).dropna(axis=1)
+        sub_test_x = sub_test_x.drop("genre", axis=1).dropna(axis=1)
+
+        # Train an estimator
+        estimator = Pipeline([("select", VarianceThreshold()),
+                              ("scale", RobustScaler()),
+                              ("regress", AdaBoostRegressor(base_estimator=DecisionTreeRegressor(max_depth=3,
+                                                                                                 splitter="random"),
+                                                            n_estimators=50000,
+                                                            learning_rate=0.001))])
+        estimator.fit(sub_train_x, sub_train_y)
+
+        # Predict and set the index back to the original testing index
+        sub_test_x["outcome"] = estimator.predict(sub_test_x)
+        df["outcome"] = df["outcome"].fillna(sub_test_x["outcome"])
+
     test["outcome"] = df["outcome"]
 
     return test.reset_index()[["activity_id", "outcome"]]
@@ -97,10 +130,10 @@ def local_test(train, test):
 
     if benchmark_score < model_score:
         print("The model scored {0} AUC, and the benchmark scored {1} AUC. So this one is {2} AUC over the benchmark!"
-              ).format(model_score, benchmark_score, model_score-benchmark_score)
+              .format(model_score, benchmark_score, model_score-benchmark_score))
     else:
         print("The model scored {0} AUC, and the benchmark scored {1} AUC. So this one is {2} AUC under the benchmark."
-              ).format(model_score, benchmark_score, benchmark_score-model_score)
+              .format(model_score, benchmark_score, benchmark_score-model_score))
 
     return model_score-benchmark_score
 
@@ -114,12 +147,12 @@ def main():
     for i in range(3):
         print("Local test {}...".format(i+1))
         scores.append(local_test(train, test))
-    print "The average model score was {} AUC over the benchmark.".format(sum(scores)/len(scores))
+    print("The average model score was {} AUC over the benchmark.".format(sum(scores)/len(scores)))
 
     # # Write a benchmark file to the submissions folder... takes about 30 seconds
     # print("Starting the benchmark model...")
     # benchmark_model(train, test).to_csv("../output/benchmark_submission.csv", index=False)
-    #
+
     # # Write model predictions file to the submissions folder... takes about 20 minutes
     # print("Starting the main model...")
     # model(train, test).to_csv("../output/kpalm_submission.csv", index=False)

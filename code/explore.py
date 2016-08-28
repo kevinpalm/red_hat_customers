@@ -68,7 +68,7 @@ def groupplot(train, test):
     df = train[["date_act", "group_1", "outcome"]]
 
     # Read in the benchmark predictions, add them to the testing data and format to match the above df
-    predicts = pd.read_csv("../output/benchmark_submission.csv")
+    predicts = pd.read_csv("../output/adaboost_2_PLS_submission.csv")
     formatpredicts = test[["date_act", "group_1"]].reset_index()
     formatpredicts["prediction"] = predicts["outcome"]
 
@@ -81,7 +81,7 @@ def groupplot(train, test):
     grps["Max Label"] = df.groupby("group_1")["prediction"].max()
     grps["Count Label"] = df.groupby("group_1")["prediction"].count()
     grps = grps[grps["Min Label"] < 0.25][grps["Max Label"] > 0.75][grps["Count Label"] >= 10]
-    grps = grps.sort_index().sample(5, random_state=42)
+    grps = grps.sort_index().sample(5)
     grps = list(grps.index)
 
     # Prepare graphic objects
@@ -90,7 +90,7 @@ def groupplot(train, test):
                                                                                                   sharey=True)
     # Set up the data for each object
     for ax in axdict.keys():
-        subdf = df[df["group_1"] == grps[axdict.keys().index(ax)]]
+        subdf = df[df["group_1"] == grps[list(axdict.keys()).index(ax)]]
         subdf["date_act"] = (subdf["date_act"]-subdf["date_act"].min())/np.timedelta64(1, 'D')
         axdict[ax].scatter(subdf["date_act"], subdf["prediction"], color='r', alpha=0.4)
         axdict[ax].scatter(subdf["date_act"], subdf["outcome"], color='b', alpha=0.4)
@@ -112,7 +112,8 @@ def groupplot(train, test):
     plt.setp([a.get_yticklabels() for a in f.axes], fontsize=8)
 
     # Write to file
-    plt.savefig("../images/output_group_scatters.png")
+    plt.show()
+    # plt.savefig("../images/output_group_scatters.png")
     plt.clf()
 
 def main():
