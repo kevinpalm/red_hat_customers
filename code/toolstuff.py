@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.cross_decomposition import PLSRegression
+from sklearn.pipeline import Pipeline
+from sklearn.feature_selection import SelectPercentile, f_regression
 
 
 def simple_load():
@@ -245,8 +247,7 @@ def prep_features(train, test):
         if train[column].dtype == bool:
             train_feats[column] = train[column].astype(int)
             train = train.drop(column, axis=1)
-        # elif len(set(train[column].tolist())) < 100:
-        else:
+        elif len(set(train[column].tolist())) < 100:
             train_feats = train_feats.join(pd.get_dummies(column + "_" + train[column].astype(str)))
             train = train.drop(column, axis=1)
 
@@ -254,8 +255,7 @@ def prep_features(train, test):
         if test[column].dtype == bool:
             test_feats[column] = test[column].astype(int)
             test = test.drop(column, axis=1)
-        # elif len(set(test[column].tolist())) < 100:
-        else:
+        elif len(set(test[column].tolist())) < 100:
             test_feats = test_feats.join(pd.get_dummies(column + "_" + test[column].astype(str)))
             test = test.drop(column, axis=1)
 
@@ -274,11 +274,10 @@ def prep_features(train, test):
     for column in test_feats.columns.values:
         if column not in train_feats.columns.values:
             test_feats = test_feats.drop(column, axis=1)
-            
-    print(len(train_feats.columns.values))
 
     # Let's get some decomposition done on this big dataset
-    decomp = PLSRegression()
+    decomp = Pipeline([("select", SelectPercentile(score_func=f_regression, percentile=80)),
+                       ("decomp", PLSRegression())])
     decomp.fit(train_feats, outcomes)
 
     # Prepare the training output
