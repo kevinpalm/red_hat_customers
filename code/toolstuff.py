@@ -1,8 +1,5 @@
 import pandas as pd
 import numpy as np
-from sklearn.cross_decomposition import PLSRegression
-from sklearn.pipeline import Pipeline
-from sklearn.feature_selection import SelectPercentile, f_regression
 
 
 def simple_load():
@@ -19,6 +16,13 @@ def simple_load():
     people = pd.read_csv("../data/people.csv")
     train = pd.read_csv("../data/act_train.csv")
     test = pd.read_csv("../data/act_test.csv")
+
+    # Mark unique groups of people
+    grp = people.copy()
+    grp["group_size"] = 1
+    grp = grp.groupby("group_1", as_index=False)["group_size"].count()
+    grp["unique_group"] = grp["group_size"] = 1
+    people = people.merge(grp, on="group_1", how="left")
 
     # Merge people to the other data sets
     train = train.merge(people, on="people_id", suffixes=("_act", ""))
@@ -108,6 +112,28 @@ def group_decision(train, test):
     return test["outcome"]
 
 
+def leak_resplit(train, test):
+
+    # Append the two together for creating features and sort by date and group
+    df = train[["group_1", "date_act", "outcome"]].append(test[["group_1", "date_act"]])
+
+    # Groupby to calculate the mean label for the same dates in the same group
+    lookup = train.groupby(["group_1", "date_act"], as_index=False)["outcome"].mean()
+    lookup.columns = ["group_1", "date_act", "mean_outcome"]
+
+    # Merge those means into the original sets
+    df = pd.merge(df.reset_index(), lookup, how="left", on=["group_1", "date_act"]).set_index("activity_id")
+
+    # Fill nans in outcome with mean outcome for those testing samples with definite leaks
+    test["outcome"] = df["mean_outcome"]
+
+    # Resplit
+    train = train.append(test[test["outcome"].notnull()])
+    test = test[test["outcome"].isnull()]
+
+    return train, test
+
+
 def extract_leak_features(train, test):
 
     """
@@ -150,7 +176,7 @@ def extract_leak_features(train, test):
     lookup["range"] = (lookup["max_date"] - lookup["min_date"])/np.timedelta64(1, 'D')
     lookup["data_count"] = df.groupby("group_1")["date_act"].count()
     lookup["density"] = lookup["data_count"]/lookup["range"]
-    lookup = lookup[["density"]].reset_index()
+    lookup = lookup[["density", "range"]].reset_index()
 
     # Merge in density
     df = pd.merge(df.reset_index(), lookup, how="left", on=["group_1"]).set_index("activity_id")
@@ -163,8 +189,10 @@ def extract_leak_features(train, test):
     df = pd.merge(df.reset_index(), lookup, how="left", on=["group_1", "date_act"]).set_index("activity_id")
 
     # Get distance to each side as a proportion of the group density... weird math units but seems to work
-    df["right_distance"] = (df["date_act"]-df["date_act_ffill"])/np.timedelta64(1, 'D')/df["density"]
-    df["left_distance"] = (df["date_act_bfill"]-df["date_act"])/np.timedelta64(1, 'D')/df["density"]
+    df["right_distance_density"] = (df["date_act"]-df["date_act_ffill"])/np.timedelta64(1, 'D')/df["density"]
+    df["left_distance_density"] = (df["date_act_bfill"]-df["date_act"])/np.timedelta64(1, 'D')/df["density"]
+    df["right_distance_range"] = (df["date_act"]-df["date_act_ffill"])/np.timedelta64(1, 'D')/df["range"]
+    df["left_distance_range"] = (df["date_act_bfill"]-df["date_act"])/np.timedelta64(1, 'D')/df["range"]
 
     # Get values to each side
     df["left_outcome"] = df["outcome_bfill"]
@@ -176,16 +204,30 @@ def extract_leak_features(train, test):
     # Fill nans in outcome with mean outcome for those testing samples with definite leaks
     df["outcome"] = df["outcome"].fillna(df["mean_outcome"])
 
+    # Try and retrieve the mapping if its already been created
+    try:
+        # Read in the map file
+        map = pd.read_csv("../output/group_cluster_map.csv").set_index("activity_id")
+
+        # Join the map into the df
+        df = df.join(map)
+
+    except:
+        pass
+
     # Resplit the data now that we have more training data
     train = df[pd.notnull(df["outcome"])]
     test = df[pd.isnull(df["outcome"])]
 
     # Select out features for final output
-    train_x = train[["left_distance", "right_distance", "left_outcome", "right_outcome"]]
+    train_x = train[["left_distance_density", "right_distance_density", "left_outcome", "right_outcome",
+                     "left_distance_range", "right_distance_range"]]
     train_y = train["outcome"]
-    test_x = test[["left_distance", "right_distance", "left_outcome", "right_outcome"]]
+    test_x = test[["left_distance_density", "right_distance_density", "left_outcome", "right_outcome",
+                   "left_distance_range", "right_distance_range"]]
 
     return train_x, train_y, test_x
+
 
 def prep_features(train, test):
 
@@ -213,6 +255,10 @@ def prep_features(train, test):
     test_feats = test_feats.join(pd.get_dummies("act_month_" + test["date_act"].dt.month.astype(str)))
     test_feats = test_feats.join(pd.get_dummies("act_weekday_" + test["date_act"].dt.weekday.astype(str)))
 
+    # Mark weekends
+    train_feats["act_weekend"] = (train["date_act"].dt.weekday < 5).astype(int)
+    test_feats["act_weekend"] = (test["date_act"].dt.weekday < 5).astype(int)
+
     # Seasonal features for people date, let's only do month and year because it seems to be a longer term thing
     train_feats = train_feats.join(pd.get_dummies("people_month_" + train["date"].dt.month.astype(str)))
     train_feats = train_feats.join(pd.get_dummies("people_year_" + train["date"].dt.year.astype(str)))
@@ -223,12 +269,7 @@ def prep_features(train, test):
     train = train.drop(["date", "date_act"], axis=1)
     test = test.drop(["date", "date_act"], axis=1)
 
-    # # Drop any columns with nans
-    # train = train.dropna(axis=1)
-    # test = test.dropna(axis=1)
-
     # Also remove group_1 since it's already used, and people_id by association. Also, outcome isn't a training feature
-    outcomes = train["outcome"]
     train = train.drop(["group_1", "outcome", "people_id"], axis=1)
     test = test.drop(["group_1", "people_id"], axis=1)
     try:
@@ -241,6 +282,13 @@ def prep_features(train, test):
     train = train.drop("char_38", axis=1)
     test_feats["char_38"] = test["char_38"]/100
     test = test.drop("char_38", axis=1)
+
+    # Group size can also go in the same, so long as we scale it to be between 0 and 1
+    scaler = train["group_size"].max()
+    train_feats["group_size"] = train["group_size"]/scaler
+    train = train.drop("group_size", axis=1)
+    test_feats["group_size"] = test["group_size"]/scaler
+    test = test.drop("group_size", axis=1)
 
     # Copy over the ready made booleans, one-hot the categorical with a reasonable number of features, drop as we go
     for column in train.columns.values:
@@ -259,14 +307,6 @@ def prep_features(train, test):
             test_feats = test_feats.join(pd.get_dummies(column + "_" + test[column].astype(str)))
             test = test.drop(column, axis=1)
 
-    # Drop all the columns with nan in the title
-    for column in train_feats.columns.values:
-        if "nan" in column:
-            train_feats = train_feats.drop(column, axis=1)
-    for column in test_feats.columns.values:
-        if "nan" in column:
-            test_feats = test_feats.drop(column, axis=1)
-
     # Cross check for any columns that don't exist in both sides of the split
     for column in train_feats.columns.values:
         if column not in test_feats.columns.values:
@@ -275,20 +315,7 @@ def prep_features(train, test):
         if column not in train_feats.columns.values:
             test_feats = test_feats.drop(column, axis=1)
 
-    # Let's get some decomposition done on this big dataset
-    decomp = Pipeline([("select", SelectPercentile(score_func=f_regression, percentile=80)),
-                       ("decomp", PLSRegression())])
-    decomp.fit(train_feats, outcomes)
-
-    # Prepare the training output
-    train_comps = pd.DataFrame(decomp.transform(train_feats), index=train_feats.index)
-    train_comps.columns = ["principle_component_" + str(i) for i in range(len(train_comps.columns.values))]
-
-    # Prepare the testing output
-    test_comps = pd.DataFrame(decomp.transform(test_feats), index=test_feats.index)
-    test_comps.columns = ["principle_component_" + str(i) for i in range(len(test_comps.columns.values))]
-
-    return train_comps, test_comps
+    return train_feats, test_feats
 
 
 def subsplit_genre(train, test, traingenre, testgenre, outcomes):
@@ -302,3 +329,83 @@ def subsplit_genre(train, test, traingenre, testgenre, outcomes):
     testgenre = testgenre.join(df).drop("genre", axis=1)
 
     return traingenre, testgenre
+
+
+def unpack_values(tup):
+    df = pd.DataFrame()
+    try:
+        tup = np.array(tup)
+        tup = pd.DataFrame(tup)
+        for col in tup.columns.values:
+            df[col] = tup[col]
+    except:
+        count = 0
+        for i in tup:
+            count+=1
+            i = np.array(i)
+            i = pd.DataFrame(i)
+            for x in i:
+                df[str(x)+"_"+str(count)] = i[x]
+    return df
+
+
+def cluster_groups_delta(group_1, trainfeats, testfeats):
+
+    # Append the features into one dataset and ensure that group_1 is present
+    df = trainfeats.append(testfeats)
+    df["group_1"] = group_1
+
+    # Load the group clusters
+    map = pd.read_csv("../output/group_cluster_map.csv").set_index("activity_id")
+    df["group_cluster"] = map["group_cluster"]
+
+
+    # Condense to rows of groups, merge back onto the df
+    grp = df.groupby(["group_1", "group_cluster"], as_index=False).mean()
+    df = df.reset_index().merge(grp, on=["group_1", "group_cluster"], how="left",
+                                suffixes=["", "_mean"]).set_index("activity_id")
+
+    # Calculate delta mean
+    for column in df.columns.values:
+        if "_mean" not in column:
+            try:
+                df[column] = df[column + "_mean"] - df[column]
+                trainfeats[column] = df[column]
+                testfeats[column] = df[column]
+            except:
+                pass
+
+    return trainfeats, testfeats
+
+
+def same_extremes(df, train, test):
+    """Sink or elevate to the most extreme prediction for the same groups on the same dates"""
+
+    # Merge together the data
+    lookup = df.join(train.append(test)[["group_1", "date_act"]])
+
+    # Caluculate the easy ones
+    grp = pd.DataFrame()
+    grp["count"] = lookup.groupby(["group_1", "date_act"])["outcome"].count()
+    grp["min"] = lookup.groupby(["group_1", "date_act"])["outcome"].min()
+    grp["max"] = lookup.groupby(["group_1", "date_act"])["outcome"].max()
+    grp = grp[grp["count"] > 1]
+    grp["value"] = None
+    grp.loc[(grp["max"] < 0.5), "value"] = grp["min"]
+    grp.loc[(grp["min"] > 0.5), "value"] = grp["max"]
+
+    # Do the remaining ones by loop
+    for index, row in grp[grp["value"].isnull()].iterrows():
+        if 0.5-row["min"] > row["max"]-0.5:
+            grp.loc[index, "value"] = row["min"]
+        else:
+            grp.loc[index, "value"] = row["max"]
+
+    # Merge to lookup for indexing and filling
+    lookup = lookup.reset_index().merge(grp[["value"]].reset_index(), how="left", on=["group_1", "date_act"]
+                                        ).set_index("activity_id")
+    lookup["value"] = lookup["value"].fillna(lookup["outcome"])
+
+    df["outcome"] = lookup["outcome"]
+
+    return df

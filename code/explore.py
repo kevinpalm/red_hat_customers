@@ -68,7 +68,7 @@ def groupplot(train, test):
     df = train[["date_act", "group_1", "outcome"]]
 
     # Read in the benchmark predictions, add them to the testing data and format to match the above df
-    predicts = pd.read_csv("../output/adaboost_2_PLS_submission.csv")
+    predicts = pd.read_csv("../output/kpalm_submission.csv")
     formatpredicts = test[["date_act", "group_1"]].reset_index()
     formatpredicts["prediction"] = predicts["outcome"]
 
