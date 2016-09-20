@@ -36,3 +36,20 @@ If you're only interested in running the local tests, make sure to
 comment out the the extra lines in the main() function. The local tests
 take about five minutes, whereas the full script to generate a kaggle
 submission takes about two hours.
+
+## Explaination of my Final Submission
+On its own, this script scored 0.991392 AUC on the public leaderboard.
+By using my cluster_weight postprocessing script on
+jlowery's adaptation of loiso and Raddar's kernel scripts, then
+averaging those results into my model, I was able to attain a score of
+0.992279 AUC, which put me in the top 3 percent.
+
+The postprocessing script essentially looks for clusters of datapoints -
+with the datestamp as the only feature - for each group_1. Then it
+adjusts the whole cluster towards the most extreme prediction in that
+cluster, so long as the cluster doesn't straddle 0.5. In that case the
+whole cluster is assumed as uncertain.
+
+Because it takes a long time to create the map of those clusters,
+I've included an already generated csv in this output directory of this
+repo.
