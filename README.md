@@ -9,13 +9,6 @@ specific introduction to the competition and its goals, and for an
 overview of my project, see the report file.
 
 ## Set Up
-**Important**: If you want to generate a Kaggle submission using this
-script, you should have at least 12 gigs of memory available for the
-PCA step. Otherwise, you can still run the local tests without straining
-your system. Or, you can edit line 232 of utilities.py so that the
-IncrimentalPCA batch_size argument is something that your computer can
-handle.
-
 This project was written using Python 2.7, but with my best efforts to
 make it Python 3 compatible. Required libraries are:
 
